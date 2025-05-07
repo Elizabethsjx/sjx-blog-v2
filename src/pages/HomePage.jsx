@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
+import '../assets/css/hero.css';
 
 const HomePage = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-16 rounded-lg mb-12">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Financial Insights</h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
+      <section className="hero-background text-white py-16 rounded-lg mb-12 relative overflow-hidden">
+        <div className="hero-content container mx-auto px-4 text-center">
+          <h1 className="hero-title text-4xl md:text-5xl font-bold mb-4">Financial Insights</h1>
+          <p className="hero-description text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
             Analysis and insights on financial markets, investment strategies, and economic trends
           </p>
           <Link to="/blog" className="bg-white text-blue-800 hover:bg-blue-100 transition px-6 py-3 rounded-full font-semibold text-lg inline-block">
@@ -26,7 +27,7 @@ const HomePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Featured Post 1 */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://via.placeholder.com/600x400" alt="Market Analysis" className="w-full h-48 object-cover" />
+            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Market Analysis" className="w-full h-48 object-cover" />
             <div className="p-6">
               <span className="text-blue-600 text-sm font-semibold">Stock Analysis</span>
               <h3 className="text-xl font-bold mb-2 mt-1">Understanding Market Volatility in 2025</h3>
@@ -37,7 +38,7 @@ const HomePage = () => {
 
           {/* Featured Post 2 */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://via.placeholder.com/600x400" alt="Cryptocurrency" className="w-full h-48 object-cover" />
+            <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Cryptocurrency" className="w-full h-48 object-cover" />
             <div className="p-6">
               <span className="text-blue-600 text-sm font-semibold">Cryptocurrency</span>
               <h3 className="text-xl font-bold mb-2 mt-1">The Evolution of Blockchain and Financial Markets</h3>
@@ -48,7 +49,7 @@ const HomePage = () => {
 
           {/* Featured Post 3 */}
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://via.placeholder.com/600x400" alt="Investment Strategy" className="w-full h-48 object-cover" />
+            <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Investment Strategy" className="w-full h-48 object-cover" />
             <div className="p-6">
               <span className="text-blue-600 text-sm font-semibold">Investment Strategy</span>
               <h3 className="text-xl font-bold mb-2 mt-1">Building a Resilient Portfolio for Long-term Growth</h3>
