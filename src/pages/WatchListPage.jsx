@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-const WatchListPage = () => {
+const SuggestedStocksPage = () => {
   // State for filter settings
   const [filterOption, setFilterOption] = useState('all');
   const [sortBy, setSortBy] = useState('name');
@@ -159,7 +159,7 @@ const WatchListPage = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Hero Section */}
       <section className="mb-12 bg-gradient-to-r from-blue-800 to-blue-600 rounded-lg p-8 text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Watch List</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">Suggested Stocks</h1>
         <p className="text-xl mb-6">Track trending stocks and market movers in real-time.</p>
         <p className="text-lg opacity-80">Stay informed on price changes, trends, and market shifts.</p>
       </section>
@@ -204,7 +204,7 @@ const WatchListPage = () => {
         </div>
       </section>
 
-      {/* Watch List Table */}
+      {/* Suggested Stocks Table */}
       <section className="bg-white rounded-lg shadow-md overflow-hidden mb-12">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
@@ -296,7 +296,7 @@ const WatchListPage = () => {
       <section className="bg-blue-50 p-8 rounded-lg">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-2xl font-bold mb-3">Stay Ahead of the Market</h2>
-          <p className="text-gray-600 mb-6">Get daily watch list updates and market analysis delivered to your inbox.</p>
+          <p className="text-gray-600 mb-6">Get daily stock updates and market analysis delivered to your inbox.</p>
           <div className="flex flex-col md:flex-row gap-2">
             <input
               type="email"
@@ -313,4 +313,4 @@ const WatchListPage = () => {
   );
 };
 
-export default WatchListPage;
+export default SuggestedStocksPage;

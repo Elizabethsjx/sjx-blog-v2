@@ -16,7 +16,7 @@ const HomePage = () => {
     {
       title: "Suggested Stocks",
       description: "Track trending stocks and market movers in real-time.",
-      buttonText: "View Watch List",
+      buttonText: "View Suggested Stocks",
       buttonLink: "/watchlist"
     }
   ];

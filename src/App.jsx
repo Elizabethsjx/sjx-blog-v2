@@ -6,7 +6,7 @@ import BlogPostPage from './pages/BlogPostPage';
 import CategoriesPage from './pages/CategoriesPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
-import WatchListPage from './pages/WatchListPage';
+import SuggestedStocksPage from './pages/WatchListPage';
 import './App.css';
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
           <Route path="categories" element={<CategoriesPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
-          <Route path="watchlist" element={<WatchListPage />} />
+          <Route path="watchlist" element={<SuggestedStocksPage />} />
           <Route path="*" element={
             <div className="text-center py-20">
               <h2 className="text-3xl font-bold mb-4">Page Not Found</h2>
