@@ -4,6 +4,24 @@
   overflow: hidden;
 }
 
+/* Carousel container */
+.hero-carousel {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Carousel track */
+.carousel-track {
+  width: 100%;
+  display: flex;
+}
+
+/* Individual carousel items */
+.carousel-item {
+  width: 100%;
+  flex-shrink: 0;
+}
+
 /* Create a grid pattern overlay */
 .hero-background::before {
   content: '';
@@ -38,6 +56,38 @@
 .hero-content {
   position: relative;
   z-index: 10;
+}
+
+/* Carousel navigation buttons */
+.carousel-nav-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.carousel-nav-btn:hover {
+  opacity: 1;
+}
+
+/* Carousel indicators */
+.carousel-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.carousel-indicators button {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .hero-title {
