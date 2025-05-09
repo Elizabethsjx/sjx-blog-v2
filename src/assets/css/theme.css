@@ -1,0 +1,151 @@
+/* Evercore-inspired theme variables */
+:root {
+  /* Base theme */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-accent: #f3f4f6;
+  --color-text-primary: #334e68;
+  --color-text-secondary: #486581;
+  --color-text-muted: #627d98;
+  --color-border: #e5e7eb;
+  --color-shadow: rgba(15, 23, 42, 0.05);
+
+  /* Brand colors */
+  --color-evercore-navy-50: #f0f4f8;
+  --color-evercore-navy-100: #d9e2ec;
+  --color-evercore-navy-200: #bcccdc;
+  --color-evercore-navy-300: #9fb3c8;
+  --color-evercore-navy-400: #829ab1;
+  --color-evercore-navy-500: #627d98;
+  --color-evercore-navy-600: #486581;
+  --color-evercore-navy-700: #334e68;
+  --color-evercore-navy-800: #243b53;
+  --color-evercore-navy-900: #102a43;
+  
+  /* Accent colors */
+  --color-evercore-accent-red: #c41230;
+  --color-evercore-accent-green: #007a5a;
+  --color-evercore-accent-blue: #0057b8;
+  
+  /* Component specific */
+  --color-header-bg: #ffffff;
+  --color-header-text: #334e68;
+  --color-header-border: #e5e7eb;
+  --color-footer-bg: #102a43;
+  --color-footer-text: #f0f4f8;
+  --color-card-bg: #ffffff;
+  --color-card-border: #e5e7eb;
+  
+  /* Financial indicators */
+  --color-positive: #007a5a;
+  --color-negative: #c41230;
+  --color-neutral: #627d98;
+  
+  /* Button colors */
+  --color-btn-primary-bg: #0057b8;
+  --color-btn-primary-text: #ffffff;
+  --color-btn-primary-hover: #334e68;
+  
+  /* Table colors */
+  --color-table-header-bg: #f0f4f8;
+  --color-table-header-text: #334e68;
+  --color-table-row-hover: #f9fafb;
+  --color-table-border: #e5e7eb;
+  
+  /* Transitions */
+  --transition-speed: 0.2s;
+}
+
+/* Dark theme variables - more subdued for corporate look */
+.dark {
+  --color-bg-primary: #1f2937;
+  --color-bg-secondary: #111827;
+  --color-bg-accent: #374151;
+  --color-text-primary: #f0f4f8;
+  --color-text-secondary: #d9e2ec;
+  --color-text-muted: #9fb3c8;
+  --color-border: #4b5563;
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  
+  /* Component specific dark mode */
+  --color-header-bg: #111827;
+  --color-header-text: #f0f4f8;
+  --color-header-border: #374151;
+  --color-footer-bg: #0f172a;
+  --color-footer-text: #f0f4f8;
+  --color-card-bg: #1f2937;
+  --color-card-border: #374151;
+  
+  /* Table colors dark mode */
+  --color-table-header-bg: #111827;
+  --color-table-header-text: #d9e2ec;
+  --color-table-row-hover: #374151;
+  --color-table-border: #4b5563;
+}
+
+/* Global styles affected by theme */
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  color: var(--color-text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+a {
+  color: var(--color-evercore-accent-blue);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+
+a:hover {
+  color: var(--color-evercore-navy-900);
+}
+
+/* Utility classes for themed colors */
+.evercore-card {
+  background-color: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  box-shadow: 0 1px 2px var(--color-shadow);
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+}
+
+.evercore-input {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.evercore-input:focus {
+  outline: none;
+  border-color: var(--color-evercore-accent-blue);
+  box-shadow: 0 0 0 2px rgba(0, 87, 184, 0.2);
+}
+
+/* Financial indicator colors */
+.evercore-positive {
+  color: var(--color-positive);
+}
+
+.evercore-negative {
+  color: var(--color-negative);
+}
+
+.evercore-neutral {
+  color: var(--color-neutral);
+}
+
+/* Subtle transitions */
+* {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: var(--transition-speed);
+}

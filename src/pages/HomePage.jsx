@@ -1,147 +1,66 @@
 import { Link } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
 import '../assets/css/hero.css';
+import Card from '../components/ui/Card';
+import Button from '../components/ui/Button';
+import { useTheme } from '../context/ThemeContext';
 
 const HomePage = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const timerRef = useRef(null);
+  const { darkMode } = useTheme();
   
-  const carouselItems = [
-    {
-      title: "Financial Insights",
-      description: "Analysis and insights on financial markets, investment strategies, and economic trends",
-      buttonText: "Explore Articles",
-      buttonLink: "/blog"
-    },
-    {
-      title: "Suggested Stocks",
-      description: "Track trending stocks and market movers in real-time.",
-      buttonText: "View Suggested Stocks",
-      buttonLink: "/watchlist"
-    }
-  ];
-
-  // Auto-play function
-  const startAutoPlay = () => {
-    timerRef.current = setInterval(() => {
-      nextSlide();
-    }, 4000); // Change every 4 seconds
-  };
-
-  // Navigate to next slide
-  const nextSlide = () => {
-    setActiveIndex(prevIndex => 
-      prevIndex === carouselItems.length - 1 ? 0 : prevIndex + 1
-    );
-  };
-
-  // Navigate to previous slide
-  const prevSlide = () => {
-    setActiveIndex(prevIndex => 
-      prevIndex === 0 ? carouselItems.length - 1 : prevIndex - 1
-    );
-  };
-
-  // Start/reset timer when activeIndex changes
-  useEffect(() => {
-    clearInterval(timerRef.current);
-    startAutoPlay();
-    
-    return () => clearInterval(timerRef.current); // Clean up on unmount
-  }, [activeIndex]);
   return (
     <div>
-      {/* Hero Section with Carousel */}
-      <section className="hero-background text-white py-16 rounded-lg mb-12 relative overflow-hidden">
-        <div className="hero-carousel relative">
-          {/* Carousel Track */}
-          <div 
-            className="carousel-track flex transition-transform duration-500 ease-in-out" 
-            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+      {/* Hero Section - Single Static Hero */}
+      <section className="hero-section mb-16">
+        <div className="hero-overlay"></div>
+        <img 
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
+          alt="Financial district skyline" 
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="hero-content container mx-auto px-6 text-center">
+          <h1 className="hero-title text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
+            Independent Financial Analysis &amp; Market Insights
+          </h1>
+          <p className="hero-description text-lg md:text-xl">
+            Providing in-depth analysis and strategic perspectives on financial markets, investment opportunities, and economic trends.
+          </p>
+          <Button 
+            to="/blog"
+            variant="outline"
+            size="lg"
+            className="hero-cta"
           >
-            {/* Carousel Items */}
-            {carouselItems.map((item, index) => (
-              <div key={index} className="carousel-item w-full flex-shrink-0">
-                <div className="hero-content container mx-auto px-4 text-center">
-                  <h1 className="hero-title text-4xl md:text-5xl font-bold mb-4">{item.title}</h1>
-                  <p className="hero-description text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-                    {item.description}
-                  </p>
-                  <Link 
-                    to={item.buttonLink} 
-                    className="bg-white text-blue-800 hover:bg-blue-100 transition px-6 py-3 rounded-full font-semibold text-lg inline-block cursor-pointer"
-                  >
-                    {item.buttonText}
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Navigation Controls */}
-          <button 
-            className="carousel-nav-btn carousel-prev absolute top-1/2 left-4 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white rounded-full p-2 focus:outline-none z-20"
-            onClick={prevSlide}
-            aria-label="Previous slide"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button 
-            className="carousel-nav-btn carousel-next absolute top-1/2 right-4 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white rounded-full p-2 focus:outline-none z-20"
-            onClick={nextSlide}
-            aria-label="Next slide"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
-          {/* Slide Indicators */}
-          <div className="carousel-indicators absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-20">
-            {carouselItems.map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full ${index === activeIndex ? 'bg-white' : 'bg-white/50'}`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+            View Our Insights
+          </Button>
         </div>
       </section>
 
-      {/* Suggested Stocks Section */}
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Suggested Stocks</h2>
-          <Link to="/watchlist" className="text-blue-600 hover:text-blue-800 transition">View All</Link>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+      {/* Market Overview Section */}
+      <section className="mb-16 container mx-auto px-6">
+        <h2 className="section-title">Market Overview</h2>
+        <Card className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
+              <thead style={{ backgroundColor: 'var(--color-table-header-bg)', color: 'var(--color-table-header-text)' }}>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Symbol / Name
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Price
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Change
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
                     Chart
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
                 {[
                   {
                     id: 1,
@@ -189,18 +108,18 @@ const HomePage = () => {
                     chartColor: 'green'
                   }
                 ].map((stock) => (
-                  <tr key={stock.id} className="hover:bg-gray-50 transition">
+                  <tr key={stock.id} className="hover:bg-evercore-gray-50 dark:hover:bg-evercore-navy-800 transition">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <div className="text-sm font-medium text-gray-900">{stock.symbol}</div>
-                        <div className="text-sm text-gray-500">{stock.name}</div>
+                        <div className="text-sm font-medium">{stock.symbol}</div>
+                        <div className="text-sm text-evercore-navy-500 dark:text-evercore-navy-400">{stock.name}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">${stock.price.toFixed(2)}</div>
+                      <div className="text-sm">${stock.price.toFixed(2)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className={`text-sm ${stock.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      <div className={`text-sm ${stock.changePercent >= 0 ? 'evercore-positive' : 'evercore-negative'}`}>
                         <span>{stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)}</span>
                         <span className="ml-1">({stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%)</span>
                       </div>
@@ -224,220 +143,180 @@ const HomePage = () => {
                             
                             return points.join(' ');
                           })()}
-                          stroke={stock.chartColor === 'green' ? '#10b981' : '#ef4444'}
+                          stroke={stock.chartColor === 'green' ? 'var(--color-positive)' : 'var(--color-negative)'}
                           strokeWidth="1.5"
                           fill="none"
                         />
                       </svg>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/stocks/${stock.symbol}`} className="text-blue-600 hover:text-blue-900">View</Link>
+                      <Button to={`/stocks/${stock.symbol}`} variant="text" size="sm">View</Button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+          <div className="px-6 py-4 border-t border-evercore-gray-200 dark:border-evercore-navy-700 text-right">
+            <Button to="/watchlist" variant="text">View All Markets</Button>
+          </div>
+        </Card>
       </section>
 
-      {/* Featured Posts */}
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Featured Articles</h2>
-          <Link to="/blog" className="text-blue-600 hover:text-blue-800 transition">View All</Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Featured Insights Section */}
+      <section className="mb-16 container mx-auto px-6">
+        <h2 className="section-title">Featured Insights</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Featured Post 1 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <Card className="overflow-hidden" hover={true}>
             <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Market Analysis" className="w-full h-48 object-cover" />
             <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Stock Analysis</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Understanding Market Volatility in 2025</h3>
-              <p className="text-gray-600 mb-4">An in-depth look at what's driving market fluctuations this year and strategies to navigate uncertainty.</p>
-              <Link to="/blog/1" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
+              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Stock Analysis</div>
+              <h3 className="section-subtitle">Understanding Market Volatility in 2025</h3>
+              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">An in-depth look at what's driving market fluctuations this year and strategies to navigate uncertainty.</p>
+              <Button to="/blog/1" variant="text">Read Analysis</Button>
             </div>
-          </div>
+          </Card>
 
           {/* Featured Post 2 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <Card className="overflow-hidden" hover={true}>
             <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Cryptocurrency" className="w-full h-48 object-cover" />
             <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Cryptocurrency</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">The Evolution of Blockchain and Financial Markets</h3>
-              <p className="text-gray-600 mb-4">How blockchain technology continues to reshape traditional finance and investment opportunities.</p>
-              <Link to="/blog/2" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
+              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Cryptocurrency</div>
+              <h3 className="section-subtitle">The Evolution of Blockchain and Financial Markets</h3>
+              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">How blockchain technology continues to reshape traditional finance and investment opportunities.</p>
+              <Button to="/blog/2" variant="text">Read Analysis</Button>
             </div>
-          </div>
+          </Card>
 
           {/* Featured Post 3 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <Card className="overflow-hidden" hover={true}>
             <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Investment Strategy" className="w-full h-48 object-cover" />
             <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Investment Strategy</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Building a Resilient Portfolio for Long-term Growth</h3>
-              <p className="text-gray-600 mb-4">Essential strategies for creating a diversified investment portfolio that can withstand market turbulence.</p>
-              <Link to="/blog/3" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
+              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Investment Strategy</div>
+              <h3 className="section-subtitle">Building a Resilient Portfolio for Long-term Growth</h3>
+              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">Essential strategies for creating a diversified investment portfolio that can withstand market turbulence.</p>
+              <Button to="/blog/3" variant="text">Read Analysis</Button>
             </div>
-          </div>
+          </Card>
+        </div>
+        <div className="text-center mt-8">
+          <Button to="/blog" variant="outline">View All Insights</Button>
         </div>
       </section>
 
-      {/* Stocks Market Section */}
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Stocks Market</h2>
-          <Link to="/stocks" className="text-blue-600 hover:text-blue-800 transition">View All</Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Stock Post 1 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Stock Trading" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Market Trends</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Q3 Earnings Season: What to Expect</h3>
-              <p className="text-gray-600 mb-4">Our analysis of upcoming earnings reports and their potential impact on major market indices.</p>
-              <Link to="/stocks/earnings" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
-
-          {/* Stock Post 2 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Tech Stocks" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Sector Analysis</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Tech Sector: Growth Opportunities in AI</h3>
-              <p className="text-gray-600 mb-4">Exploring how artificial intelligence innovations are creating new investment opportunities in the tech sector.</p>
-              <Link to="/stocks/tech-sector" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
-
-          {/* Stock Post 3 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1535320903710-d993d3d77d29?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Green Investing" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">ESG Investing</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Sustainable Stocks: The Green Revolution</h3>
-              <p className="text-gray-600 mb-4">How environmental, social, and governance factors are reshaping investment strategies in traditional markets.</p>
-              <Link to="/stocks/esg-investing" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
+      {/* Investment Sectors Section */}
+      <section className="mb-16 container mx-auto px-6">
+        <h2 className="section-title">Investment Sectors</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="p-6" hover={true}>
+            <h3 className="font-serif text-lg font-semibold mb-3">Technology</h3>
+            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Analysis of tech sector trends, emerging technologies, and growth opportunities.</p>
+            <Button to="/categories/technology" variant="text" size="sm">Explore</Button>
+          </Card>
+          
+          <Card className="p-6" hover={true}>
+            <h3 className="font-serif text-lg font-semibold mb-3">Healthcare</h3>
+            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Insights on healthcare innovations, regulatory impacts, and investment considerations.</p>
+            <Button to="/categories/healthcare" variant="text" size="sm">Explore</Button>
+          </Card>
+          
+          <Card className="p-6" hover={true}>
+            <h3 className="font-serif text-lg font-semibold mb-3">Financials</h3>
+            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Market intelligence on banking, fintech, and changing financial landscapes.</p>
+            <Button to="/categories/financials" variant="text" size="sm">Explore</Button>
+          </Card>
+          
+          <Card className="p-6" hover={true}>
+            <h3 className="font-serif text-lg font-semibold mb-3">Energy</h3>
+            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Research on traditional and renewable energy markets and sustainability trends.</p>
+            <Button to="/categories/energy" variant="text" size="sm">Explore</Button>
+          </Card>
         </div>
       </section>
 
-      {/* Bonds Market Section */}
-      <section className="mb-12">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Bonds Market</h2>
-          <Link to="/bonds" className="text-blue-600 hover:text-blue-800 transition">View All</Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Bond Post 1 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Treasury Bonds</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Treasury Yield Curve: Signals and Implications</h3>
-              <p className="text-gray-600 mb-4">Understanding what the current yield curve tells us about economic expectations and investor sentiment.</p>
-              <Link to="/bonds/yield-curve" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
+      {/* Research & Analysis Section */}
+      <section className="mb-16 container mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12">
+          <div className="lg:col-span-2">
+            <h2 className="section-title">Research Services</h2>
+            <p className="text-evercore-navy-700 dark:text-evercore-navy-300 mb-6">
+              Our team provides in-depth financial research and market analysis to help investors make informed decisions in an increasingly complex global landscape.
+            </p>
+            <ul className="space-y-3 mb-8">
+              <li className="flex items-start">
+                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+                <span>Macroeconomic trend analysis</span>
+              </li>
+              <li className="flex items-start">
+                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+                <span>Sector-specific investment opportunities</span>
+              </li>
+              <li className="flex items-start">
+                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+                <span>Risk assessment and portfolio optimization</span>
+              </li>
+              <li className="flex items-start">
+                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
+                </svg>
+                <span>Customized investment strategy development</span>
+              </li>
+            </ul>
+            <Button to="/about" variant="primary">Learn More</Button>
           </div>
-
-          {/* Bond Post 2 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Corporate Bonds</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">High-Yield vs. Investment Grade: Risk Assessment</h3>
-              <p className="text-gray-600 mb-4">Analyzing the risk-reward profiles of different corporate bond categories in the current market.</p>
-              <Link to="/bonds/corporate" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
+          
+          <div className="lg:col-span-3">
+            <Card className="p-8" bordered={false} hover={false}>
+              <h3 className="font-serif text-xl font-semibold mb-4">Federal Reserve & Monetary Policy</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Policy Item 1 */}
+                <div className="border-b border-evercore-gray-200 dark:border-evercore-navy-700 pb-4">
+                  <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">FOMC</div>
+                  <h4 className="font-medium text-base mb-2">Interest Rate Outlook: Fed's Next Moves</h4>
+                  <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-3">Expert analysis of recent FOMC statements and what they indicate about future monetary policy.</p>
+                  <Button to="/fomc/interest-rates" variant="text" size="sm">Read Analysis</Button>
+                </div>
+                
+                {/* Policy Item 2 */}
+                <div className="border-b border-evercore-gray-200 dark:border-evercore-navy-700 pb-4">
+                  <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Monetary Policy</div>
+                  <h4 className="font-medium text-base mb-2">Quantitative Easing: Impact on Markets</h4>
+                  <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-3">How central bank asset purchases affect different asset classes and investment strategies.</p>
+                  <Button to="/fomc/quantitative-easing" variant="text" size="sm">Read Analysis</Button>
+                </div>
+              </div>
+            </Card>
           </div>
-
-          {/* Bond Post 3 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            <div className="p-6">
-              <span className="text-blue-600 text-sm font-semibold">Municipal Bonds</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Tax-Exempt Strategies for Income Investors</h3>
-              <p className="text-gray-600 mb-4">How municipal bonds can provide tax advantages while generating steady income in your portfolio.</p>
-              <Link to="/bonds/municipal" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* FOMC Section */}
-      <section className="mb-12 bg-gray-50 p-6 rounded-lg">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Federal Reserve & Monetary Policy</h2>
-          <Link to="/fomc" className="text-blue-600 hover:text-blue-800 transition">View All</Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* FOMC Post 1 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden flex">
-            <div className="w-1/3 bg-blue-100 flex items-center justify-center">
-              <div className="text-blue-800 text-4xl font-bold">FED</div>
-            </div>
-            <div className="w-2/3 p-6">
-              <span className="text-blue-600 text-sm font-semibold">FOMC Meetings</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Interest Rate Outlook: Fed's Next Moves</h3>
-              <p className="text-gray-600 mb-4">Expert analysis of recent FOMC statements and what they indicate about future monetary policy.</p>
-              <Link to="/fomc/interest-rates" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
-
-          {/* FOMC Post 2 */}
-          <div className="bg-white rounded-lg shadow-md overflow-hidden flex">
-            <div className="w-1/3 bg-green-100 flex items-center justify-center">
-              <div className="text-green-800 text-4xl font-bold">QE</div>
-            </div>
-            <div className="w-2/3 p-6">
-              <span className="text-blue-600 text-sm font-semibold">Monetary Policy</span>
-              <h3 className="text-xl font-bold mb-2 mt-1">Quantitative Easing: Impact on Markets</h3>
-              <p className="text-gray-600 mb-4">How central bank asset purchases affect different asset classes and investment strategies.</p>
-              <Link to="/fomc/quantitative-easing" className="text-blue-600 hover:text-blue-800 font-medium">Read More →</Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Section */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Explore by Category</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to="/categories/stocks" className="bg-blue-100 hover:bg-blue-200 transition p-6 rounded-lg text-center">
-            <h3 className="font-bold text-blue-800">Stocks</h3>
-          </Link>
-          <Link to="/categories/crypto" className="bg-purple-100 hover:bg-purple-200 transition p-6 rounded-lg text-center">
-            <h3 className="font-bold text-purple-800">Cryptocurrency</h3>
-          </Link>
-          <Link to="/categories/strategies" className="bg-green-100 hover:bg-green-200 transition p-6 rounded-lg text-center">
-            <h3 className="font-bold text-green-800">Investment Strategies</h3>
-          </Link>
-          <Link to="/categories/economy" className="bg-yellow-100 hover:bg-yellow-200 transition p-6 rounded-lg text-center">
-            <h3 className="font-bold text-yellow-800">Economy</h3>
-          </Link>
         </div>
       </section>
 
       {/* Newsletter Section */}
-      <section className="bg-gray-100 p-8 rounded-lg">
-        <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold mb-3">Stay Updated</h2>
-          <p className="text-gray-600 mb-6">Subscribe to our newsletter for the latest financial insights and analysis.</p>
-          <div className="flex flex-col md:flex-row gap-2">
-            <input
-              type="email"
-              placeholder="Your email address"
-              className="px-4 py-3 rounded-lg border flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button className="bg-blue-600 hover:bg-blue-700 transition text-white px-6 py-3 rounded-lg font-semibold">
-              Subscribe
-            </button>
+      <section className="mb-16 container mx-auto px-6">
+        <Card className="p-8">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-center mb-8">
+              <h2 className="font-serif text-2xl font-semibold mb-3">Subscribe to Our Insights</h2>
+              <p className="text-evercore-navy-600 dark:text-evercore-navy-300">
+                Receive weekly market analysis and investment insights from our expert research team.
+              </p>
+            </div>
+            <div className="flex flex-col md:flex-row gap-3">
+              <input
+                type="email"
+                placeholder="Your email address"
+                className="evercore-input px-4 py-2 md:flex-1"
+              />
+              <Button variant="primary">Subscribe</Button>
+            </div>
           </div>
-        </div>
+        </Card>
       </section>
     </div>
   );

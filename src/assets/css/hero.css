@@ -1,100 +1,98 @@
-.hero-background {
-  background: linear-gradient(135deg, #0f2a5f 0%, #104795 100%);
+/* Evercore-inspired hero styling */
+.hero-section {
   position: relative;
   overflow: hidden;
-}
-
-/* Carousel container */
-.hero-carousel {
-  width: 100%;
-  overflow: hidden;
-}
-
-/* Carousel track */
-.carousel-track {
-  width: 100%;
-  display: flex;
-}
-
-/* Individual carousel items */
-.carousel-item {
-  width: 100%;
-  flex-shrink: 0;
-}
-
-/* Create a grid pattern overlay */
-.hero-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(to right, rgba(37, 85, 205, 0.2) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(37, 85, 205, 0.2) 1px, transparent 1px);
-  background-size: 50px 50px;
-  z-index: 1;
-}
-
-/* Add stock chart line patterns */
-.hero-background::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle, rgba(255, 255, 255, 0.1) 2px, transparent 2px);
-  background-size: 30px 30px;
-  background-position: 0 0;
-  z-index: 2;
-}
-
-/* Make text stand out */
-.hero-content {
-  position: relative;
-  z-index: 10;
-}
-
-/* Carousel navigation buttons */
-.carousel-nav-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.3s ease;
-}
-
-.carousel-nav-btn:hover {
-  opacity: 1;
-}
-
-/* Carousel indicators */
-.carousel-indicators {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.carousel-indicators button {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.hero-title {
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  background-color: var(--color-evercore-navy-900);
   color: white;
 }
 
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(16, 42, 67, 0.7); /* Evercore navy with opacity */
+  z-index: 1;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 5rem 1rem;
+}
+
+.hero-title {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-weight: 600;
+  color: white;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
 .hero-description {
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-weight: 400;
+  line-height: 1.5;
+  max-width: 800px;
+  margin: 0 auto 2rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.hero-cta {
+  display: inline-block;
+  background-color: white;
+  color: var(--color-evercore-navy-900);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: all 0.2s ease;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.hero-cta:hover {
+  background-color: var(--color-evercore-navy-50);
+  color: var(--color-evercore-navy-900);
+}
+
+.section-title {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-evercore-navy-900);
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: var(--color-evercore-accent-blue);
+}
+
+.dark .section-title {
+  color: var(--color-evercore-navy-100);
+}
+
+.dark .section-title::after {
+  background-color: var(--color-evercore-navy-400);
+}
+
+.section-subtitle {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-evercore-navy-700);
+  margin-bottom: 1rem;
+}
+
+.dark .section-subtitle {
+  color: var(--color-evercore-navy-300);
 }
