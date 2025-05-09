@@ -20,9 +20,12 @@ function App() {
           <Route path="blog" element={<BlogPage />} />
           <Route path="blog/:id" element={<BlogPostPage />} />
           <Route path="categories" element={<CategoriesPage />} />
+          <Route path="categories/:id" element={<CategoriesPage />} />
           <Route path="about" element={<AboutPage />} />
           <Route path="contact" element={<ContactPage />} />
           <Route path="watchlist" element={<SuggestedStocksPage />} />
+          <Route path="stocks/:symbol" element={<SuggestedStocksPage />} />
+          <Route path="fomc/:topic" element={<BlogPage />} />
           <Route path="*" element={
             <div className="text-center py-20">
               <h2 className="text-3xl font-bold mb-4">Page Not Found</h2>

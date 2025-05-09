@@ -9,7 +9,7 @@ const HomePage = () => {
   
   return (
     <div>
-      {/* Hero Section - Single Static Hero */}
+      {/* Hero Section - Based on Evercore reference */}
       <section className="hero-section mb-16">
         <div className="hero-overlay"></div>
         <img 
@@ -150,7 +150,7 @@ const HomePage = () => {
                       </svg>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Button to={`/stocks/${stock.symbol}`} variant="text" size="sm">View</Button>
+                      <Link to={`/stocks/${stock.symbol}`} className="text-evercore-accent-blue hover:text-evercore-navy-700 underline-offset-2 hover:underline text-sm py-1 px-3">View</Link>
                     </td>
                   </tr>
                 ))}
