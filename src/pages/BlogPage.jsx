@@ -1,88 +1,75 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
-// In a real app, this would come from an API or database
-const samplePosts = [
-  {
-    id: 1,
-    title: 'Understanding Market Volatility in 2025',
-    excerpt: 'An in-depth look at what\'s driving market fluctuations this year and strategies to navigate uncertainty.',
-    category: 'stocks',
-    categoryName: 'Stock Analysis',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'April 2, 2025',
-    readTime: '8 min read'
-  },
-  {
-    id: 2,
-    title: 'The Evolution of Blockchain and Financial Markets',
-    excerpt: 'How blockchain technology continues to reshape traditional finance and investment opportunities.',
-    category: 'crypto',
-    categoryName: 'Cryptocurrency',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'March 28, 2025',
-    readTime: '6 min read'
-  },
-  {
-    id: 3,
-    title: 'Building a Resilient Portfolio for Long-term Growth',
-    excerpt: 'Essential strategies for creating a diversified investment portfolio that can withstand market turbulence.',
-    category: 'strategies',
-    categoryName: 'Investment Strategy',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'March 22, 2025',
-    readTime: '10 min read'
-  },
-  {
-    id: 4,
-    title: 'Economic Indicators to Watch in Q2 2025',
-    excerpt: 'Key economic data points that could signal market movements in the coming months.',
-    category: 'economy',
-    categoryName: 'Economy',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'March 18, 2025',
-    readTime: '7 min read'
-  },
-  {
-    id: 5,
-    title: 'Emerging Markets: Opportunities and Risks',
-    excerpt: 'Analysis of investment prospects in developing economies and how to balance potential returns with higher volatility.',
-    category: 'stocks',
-    categoryName: 'Stock Analysis',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'March 15, 2025',
-    readTime: '9 min read'
-  },
-  {
-    id: 6,
-    title: 'Sustainable Investing: The Growth of ESG Funds',
-    excerpt: 'How environmental, social, and governance criteria are becoming central to investment decisions.',
-    category: 'strategies',
-    categoryName: 'Investment Strategy',
-    image: 'https://via.placeholder.com/800x600',
-    date: 'March 10, 2025',
-    readTime: '8 min read'
-  }
-];
-
-// Category options for filtering
-const categories = [
-  { id: 'all', name: 'All Categories' },
-  { id: 'stocks', name: 'Stocks' },
-  { id: 'crypto', name: 'Cryptocurrency' },
-  { id: 'strategies', name: 'Investment Strategies' },
-  { id: 'economy', name: 'Economy' }
-];
+import { PostService, CategoryService } from '../services/api';
 
 const BlogPage = () => {
+  const [posts, setPosts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  
+  // Fetch posts and categories from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch posts
+        const postsData = await PostService.getAllPosts();
+        setPosts(postsData.posts);
+        
+        // Fetch categories
+        const categoriesData = await CategoryService.getAllCategories();
+        
+        // Add "All Categories" option
+        const categoriesWithAll = [
+          { id: 'all', name: 'All Categories' },
+          ...categoriesData.categories.map(cat => ({
+            id: cat.id.toString(),
+            name: cat.name
+          }))
+        ];
+        
+        setCategories(categoriesWithAll);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        setError('Failed to load blog posts. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
+  // Format date for display
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+  };
+  
+  // Calculate read time (rough estimation based on content length)
+  const getReadTime = (content) => {
+    const wordsPerMinute = 200;
+    const wordCount = content.split(/\s+/).length;
+    const readTime = Math.ceil(wordCount / wordsPerMinute);
+    return `${readTime} min read`;
+  };
+  
   // Filter posts based on category and search term
-  const filteredPosts = samplePosts.filter(post => {
-    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
+  const filteredPosts = posts.filter(post => {
+    const matchesCategory = selectedCategory === 'all' || 
+                          (post.category_id && post.category_id.toString() === selectedCategory);
     const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
+                         post.content.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -125,23 +112,41 @@ const BlogPage = () => {
 
       {/* Blog Posts */}
       <section>
-        {filteredPosts.length > 0 ? (
+        {loading ? (
+          <div className="text-center py-12">
+            <p>Loading posts...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-red-600">
+            <p>{error}</p>
+          </div>
+        ) : filteredPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredPosts.map(post => (
               <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src={post.image} alt={post.title} className="w-full h-48 object-cover" />
+                <img 
+                  src={post.image_url || "https://via.placeholder.com/800x600"} 
+                  alt={post.title} 
+                  className="w-full h-48 object-cover" 
+                />
                 <div className="p-6">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-blue-600 text-sm font-semibold">{post.categoryName}</span>
-                    <span className="text-gray-500 text-sm">{post.date}</span>
+                    <span className="text-blue-600 text-sm font-semibold">
+                      {post.category ? post.category.name : 'Uncategorized'}
+                    </span>
+                    <span className="text-gray-500 text-sm">{formatDate(post.created_at)}</span>
                   </div>
                   <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                  <p className="text-gray-600 mb-4">{post.excerpt}</p>
+                  <p className="text-gray-600 mb-4">
+                    {post.content.length > 150 
+                      ? `${post.content.substring(0, 150)}...` 
+                      : post.content}
+                  </p>
                   <div className="flex justify-between items-center">
                     <Link to={`/blog/${post.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
                       Read More →
                     </Link>
-                    <span className="text-gray-500 text-sm">{post.readTime}</span>
+                    <span className="text-gray-500 text-sm">{getReadTime(post.content)}</span>
                   </div>
                 </div>
               </div>
