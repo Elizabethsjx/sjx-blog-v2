@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 import Button from './ui/Button';
 
 const Header = () => {
   const { darkMode, toggleTheme } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
@@ -27,6 +29,41 @@ const Header = () => {
           </nav>
           
           <div className="flex items-center space-x-4">
+            {/* Authentication links */}
+            <div className="hidden md:flex items-center space-x-4">
+              {isAuthenticated ? (
+                <>
+                  <Link 
+                    to="/profile" 
+                    className="text-sm font-medium hover:text-evercore-accent-blue transition"
+                  >
+                    {user?.name || 'Profile'}
+                  </Link>
+                  <button 
+                    onClick={logout}
+                    className="text-sm font-medium text-red-600 hover:text-red-700 transition"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/login" 
+                    className="text-sm font-medium hover:text-evercore-accent-blue transition"
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    to="/register" 
+                    className="text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded transition"
+                  >
+                    Register
+                  </Link>
+                </>
+              )}
+            </div>
+            
             {/* Theme Toggle Button */}
             <button 
               onClick={toggleTheme}
@@ -68,6 +105,21 @@ const Header = () => {
               <li><Link to="/categories" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Sectors</Link></li>
               <li><Link to="/about" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
               <li><Link to="/contact" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
+              
+              {/* Mobile authentication links */}
+              <div className="pt-2 border-t border-evercore-gray-200 dark:border-evercore-navy-700">
+                {isAuthenticated ? (
+                  <>
+                    <li><Link to="/profile" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Profile</Link></li>
+                    <li><button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block py-1 text-sm text-red-600 hover:text-red-700 transition">Logout</button></li>
+                  </>
+                ) : (
+                  <>
+                    <li><Link to="/login" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Login</Link></li>
+                    <li><Link to="/register" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Register</Link></li>
+                  </>
+                )}
+              </div>
             </ul>
           </nav>
         </div>
