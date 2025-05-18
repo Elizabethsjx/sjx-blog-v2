@@ -14,8 +14,10 @@ router = APIRouter(
 
 @router.get("/", response_model=CategoryList)
 def get_categories(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    categories = db.query(Category).offset(skip).limit(limit).all()
-    return {"categories": categories}
+    categories_query = db.query(Category)
+    total_categories = categories_query.count() # Get total count before pagination
+    categories = categories_query.offset(skip).limit(limit).all()
+    return {"items": categories, "total": total_categories}
 
 @router.get("/{category_id}", response_model=CategorySchema)
 def get_category(category_id: int, db: Session = Depends(get_db)):

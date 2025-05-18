@@ -19,6 +19,11 @@ class Category(CategoryBase):
         from_attributes = True
 
 
+class CategoryList(BaseModel):
+    items: List[Category]
+    total: int
+
+
 class PostBase(BaseModel):
     title: str
     content: str
@@ -44,6 +49,11 @@ class Post(PostBase):
     
     class Config:
         from_attributes = True
+
+
+class PostList(BaseModel):
+    items: List[Post]
+    total: int
 
 
 # User schemas

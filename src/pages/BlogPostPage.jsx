@@ -25,7 +25,7 @@ const BlogPostPage = () => {
         const allPostsData = await PostService.getAllPosts();
         
         // Filter for related posts (same category, different ID)
-        const related = allPostsData.posts.filter(
+        const related = (allPostsData.items || []).filter( // Changed .posts to .items and added fallback
           relatedPost => relatedPost.id !== parseInt(id) && 
                        relatedPost.category_id === postData.category_id
         ).slice(0, 2); // Limit to 2 related posts

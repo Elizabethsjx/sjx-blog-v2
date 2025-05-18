@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 // Base URL for API requests
 const API_BASE_URL = 'http://localhost:8000/api';
 
@@ -9,15 +11,10 @@ export const PostService = {
   async getAllPosts(page = 1, limit = 10) {
     try {
       const skip = (page - 1) * limit;
-      const response = await fetch(`${API_BASE_URL}/posts?skip=${skip}&limit=${limit}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error fetching posts: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.get(`${API_BASE_URL}/posts?skip=${skip}&limit=${limit}`);
+      return response.data;
     } catch (error) {
-      console.error('Error fetching posts:', error);
+      console.error('Error fetching posts:', error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -25,15 +22,10 @@ export const PostService = {
   // Get a single post by ID
   async getPost(postId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/${postId}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error fetching post: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.get(`${API_BASE_URL}/posts/${postId}`);
+      return response.data;
     } catch (error) {
-      console.error(`Error fetching post ${postId}:`, error);
+      console.error(`Error fetching post ${postId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -41,21 +33,10 @@ export const PostService = {
   // Create a new post
   async createPost(postData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error creating post: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.post(`${API_BASE_URL}/posts/`, postData);
+      return response.data;
     } catch (error) {
-      console.error('Error creating post:', error);
+      console.error('Error creating post:', error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -63,21 +44,10 @@ export const PostService = {
   // Update an existing post
   async updatePost(postId, postData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error updating post: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.put(`${API_BASE_URL}/posts/${postId}`, postData);
+      return response.data;
     } catch (error) {
-      console.error(`Error updating post ${postId}:`, error);
+      console.error(`Error updating post ${postId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -85,17 +55,10 @@ export const PostService = {
   // Delete a post
   async deletePost(postId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/posts/${postId}`, {
-        method: 'DELETE',
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error deleting post: ${response.statusText}`);
-      }
-      
+      await axios.delete(`${API_BASE_URL}/posts/${postId}`);
       return true;
     } catch (error) {
-      console.error(`Error deleting post ${postId}:`, error);
+      console.error(`Error deleting post ${postId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   }
@@ -108,15 +71,10 @@ export const CategoryService = {
   // Get all categories
   async getAllCategories() {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories`);
-      
-      if (!response.ok) {
-        throw new Error(`Error fetching categories: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.get(`${API_BASE_URL}/categories/`); // Added trailing slash
+      return response.data;
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error('Error fetching categories:', error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -124,15 +82,10 @@ export const CategoryService = {
   // Get a single category by ID
   async getCategory(categoryId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`);
-      
-      if (!response.ok) {
-        throw new Error(`Error fetching category: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.get(`${API_BASE_URL}/categories/${categoryId}`);
+      return response.data;
     } catch (error) {
-      console.error(`Error fetching category ${categoryId}:`, error);
+      console.error(`Error fetching category ${categoryId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -140,21 +93,10 @@ export const CategoryService = {
   // Create a new category
   async createCategory(categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoryData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error creating category: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.post(`${API_BASE_URL}/categories/`, categoryData);
+      return response.data;
     } catch (error) {
-      console.error('Error creating category:', error);
+      console.error('Error creating category:', error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -162,21 +104,10 @@ export const CategoryService = {
   // Update an existing category
   async updateCategory(categoryId, categoryData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoryData),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error updating category: ${response.statusText}`);
-      }
-      
-      return await response.json();
+      const response = await axios.put(`${API_BASE_URL}/categories/${categoryId}`, categoryData);
+      return response.data;
     } catch (error) {
-      console.error(`Error updating category ${categoryId}:`, error);
+      console.error(`Error updating category ${categoryId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   },
@@ -184,17 +115,10 @@ export const CategoryService = {
   // Delete a category
   async deleteCategory(categoryId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/categories/${categoryId}`, {
-        method: 'DELETE',
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error deleting category: ${response.statusText}`);
-      }
-      
+      await axios.delete(`${API_BASE_URL}/categories/${categoryId}`);
       return true;
     } catch (error) {
-      console.error(`Error deleting category ${categoryId}:`, error);
+      console.error(`Error deleting category ${categoryId}:`, error.response?.data?.detail || error.message);
       throw error;
     }
   }

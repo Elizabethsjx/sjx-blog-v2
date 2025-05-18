@@ -46,14 +46,15 @@ const Button = ({
   // Variant classes - more conservative styling
   const variantClasses = {
     primary: `
-      bg-evercore-accent-blue hover:bg-evercore-navy-700
+      bg-blue-500 hover:bg-blue-700 /* Changed to standard Tailwind blue for light mode */
       text-white 
       border border-transparent
+      dark:bg-evercore-accent-blue dark:hover:bg-evercore-navy-700 /* Keep custom for dark if preferred */
     `,
     secondary: `
-      bg-evercore-gray-100 hover:bg-evercore-gray-200
-      text-evercore-navy-700
-      border border-evercore-gray-300
+      bg-gray-300 hover:bg-gray-400 /* Changed to standard Tailwind gray */
+      text-gray-800 /* Changed to standard Tailwind gray text */
+      border border-gray-400 /* Changed to standard Tailwind gray border */
       dark:bg-evercore-navy-700 dark:hover:bg-evercore-navy-600
       dark:text-white dark:border-evercore-navy-600
     `,
@@ -70,6 +71,12 @@ const Button = ({
       border border-transparent
       dark:text-evercore-navy-300 dark:hover:text-white
       p-0 underline-offset-2 hover:underline
+    `,
+    danger: `
+      bg-red-500 hover:bg-red-700 /* Changed to standard Tailwind red for light mode */
+      text-white
+      border border-transparent
+      dark:bg-evercore-accent-red dark:hover:bg-red-700 /* Keep custom for dark if preferred */
     `
   };
 

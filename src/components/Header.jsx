@@ -6,7 +6,7 @@ import Button from './ui/Button';
 
 const Header = () => {
   const { darkMode, toggleTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, isAdmin, logout } = useAuth(); // Added isAdmin
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   return (
@@ -18,11 +18,14 @@ const Header = () => {
           </Link>
           
           <nav className="hidden md:block">
-            <ul className="flex space-x-8">
+            <ul className="flex space-x-8 items-center"> {/* Added items-center for vertical alignment */}
               <li><Link to="/" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Home</Link></li>
               <li><Link to="/blog" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Insights</Link></li>
               <li><Link to="/watchlist" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Markets</Link></li>
               <li><Link to="/categories" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Sectors</Link></li>
+              {isAuthenticated && isAdmin() && (
+                <li><Link to="/admin/posts" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Manage Posts</Link></li>
+              )}
               <li><Link to="/about" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">About</Link></li>
               <li><Link to="/contact" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Contact</Link></li>
             </ul>
@@ -103,6 +106,9 @@ const Header = () => {
               <li><Link to="/blog" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Insights</Link></li>
               <li><Link to="/watchlist" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Markets</Link></li>
               <li><Link to="/categories" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Sectors</Link></li>
+              {isAuthenticated && isAdmin() && (
+                <li><Link to="/admin/posts" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Manage Posts</Link></li>
+              )}
               <li><Link to="/about" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
               <li><Link to="/contact" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
               

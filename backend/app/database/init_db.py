@@ -1,15 +1,49 @@
 from sqlalchemy.orm import Session
-from ..models.models import Category, Post
+from ..models.models import Category, Post, User # Added User
+from ..core.security import get_password_hash # Added get_password_hash
 from datetime import datetime
 
 # Sample data for initial database population
 def init_db(db: Session):
-    # Check if we already have data
-    if db.query(Category).count() > 0:
-        return
+    admin_created_this_run = False
+    # Ensure admin user exists
+    admin_email = "admin@example.com"
+    admin_user = db.query(User).filter(User.email == admin_email).first()
+
+    if not admin_user:
+        hashed_password = get_password_hash("adminpassword")
+        default_admin = User(
+            email=admin_email,
+            name="Admin User",
+            password_hash=hashed_password,
+            is_admin=True
+        )
+        db.add(default_admin)
+        db.commit() # Commit admin user creation immediately
+        admin_created_this_run = True
+        print(f"Admin user {admin_email} created and committed.")
+    else:
+        print(f"Admin user {admin_email} already exists.")
+
+    # Check if sample categories and posts need to be created
+    create_sample_data = False
+    if db.query(Category).count() == 0:
+        print("No categories found, creating sample categories.")
+        create_sample_data = True
     
-    # Create sample categories
-    tech = Category(name="Technology", description="Articles about programming, software, and tech trends")
+    if db.query(Post).count() == 0:
+        print("No posts found, creating sample posts.")
+        create_sample_data = True
+
+    if not create_sample_data and not admin_created_this_run:
+        print("Database already initialized with admin and sample data.")
+        return
+        
+    if create_sample_data:
+        print("Initializing database with sample data...")
+
+        # Create sample categories
+        tech = Category(name="Technology", description="Articles about programming, software, and tech trends")
     health = Category(name="Health", description="Articles about health, fitness, and wellness")
     finance = Category(name="Finance", description="Articles about personal finance, investing, and economy")
     

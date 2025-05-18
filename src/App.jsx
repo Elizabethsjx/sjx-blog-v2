@@ -16,6 +16,8 @@ import GoogleCallback from './components/auth/GoogleCallback';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoute';
+import ManagePostsPage from './pages/ManagePostsPage'; // Import ManagePostsPage
+import PostForm from './components/admin/PostForm'; // Import PostForm
 import './App.css';
 
 function App() {
@@ -51,7 +53,31 @@ function App() {
             </ProtectedRoute>
           } />
           
-          {/* Admin routes can be added here */}
+          {/* Admin routes - Post Management */}
+          <Route 
+            path="admin/posts" 
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <ManagePostsPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/posts/new" 
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <PostForm />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="admin/posts/edit/:postId" 
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <PostForm />
+              </ProtectedRoute>
+            } 
+          />
           
           {/* Catch-all route */}
           <Route path="*" element={
