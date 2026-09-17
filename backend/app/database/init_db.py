@@ -44,8 +44,8 @@ def init_db(db: Session):
 
         # Create sample categories
         tech = Category(name="Technology", description="Articles about programming, software, and tech trends")
-    health = Category(name="Health", description="Articles about health, fitness, and wellness")
-    finance = Category(name="Finance", description="Articles about personal finance, investing, and economy")
+        health = Category(name="Health", description="Articles about health, fitness, and wellness")
+        finance = Category(name="Finance", description="Articles about personal finance, investing, and economy")
     
     db.add_all([tech, health, finance])
     db.commit()
