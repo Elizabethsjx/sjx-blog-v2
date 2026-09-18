@@ -14,5 +14,14 @@ if __name__ == "__main__":
     # Initialize the database with sample data
     initialize_database()
     
-    # Run the FastAPI app with Uvicorn
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    # Run the FastAPI app with Uvicorn.
+    # NOTE: reload_dirs is set to ["app"] so the watcher does NOT recursively
+    # scan the `venv/` directory (thousands of files), which would cause heavy
+    # filesystem I/O and starve other processes (e.g. the Vite dev server).
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        reload_dirs=["app"],
+    )
