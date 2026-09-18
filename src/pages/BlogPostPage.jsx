@@ -122,51 +122,38 @@ const BlogPostPage = () => {
   const tags = extractTags(post.content);
   
   return (
-    <article className="max-w-4xl mx-auto">
+    <article className="max-w-3xl mx-auto">
       {/* Article Header */}
       <header className="mb-8">
-        <span className="text-blue-600 font-semibold">
+        <span className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-evercore-accent-blue)' }}>
           {post.category ? post.category.name : 'Uncategorized'}
         </span>
-        <h1 className="text-4xl font-bold my-2">{post.title}</h1>
+        <h1 className="font-serif text-3xl md:text-4xl font-semibold my-3" style={{ color: 'var(--color-text-primary)' }}>
+          {post.title}
+        </h1>
         
-        <div className="flex items-center mt-6">
-          <img 
-            src="https://via.placeholder.com/100" 
-            alt="Author" 
-            className="w-12 h-12 rounded-full mr-4"
-          />
-          <div>
-            <p className="font-medium">Admin</p>
-            <div className="flex text-gray-500 text-sm">
-              <span>{formatDate(post.created_at)}</span>
-              <span className="mx-2">•</span>
-              <span>{getReadTime(post.content)}</span>
-            </div>
-          </div>
+        <div className="flex items-center text-sm mt-4" style={{ color: 'var(--color-text-muted)' }}>
+          <span>{formatDate(post.created_at)}</span>
+          <span className="mx-2">•</span>
+          <span>{getReadTime(post.content)}</span>
         </div>
       </header>
       
-      {/* Featured Image */}
-      <img 
-        src={post.image_url || "https://via.placeholder.com/1200x600"} 
-        alt={post.title} 
-        className="w-full h-96 object-cover rounded-lg mb-8"
-      />
-      
       {/* Article Content */}
       <div 
-        className="prose prose-lg max-w-none"
+        className="max-w-none leading-relaxed"
+        style={{ color: 'var(--color-text-primary)' }}
         dangerouslySetInnerHTML={{ __html: formattedContent }}
       />
       
       {/* Tags */}
-      <div className="mt-8 pt-6 border-t">
+      <div className="mt-8 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
         <div className="flex flex-wrap gap-2">
           {tags.map(tag => (
             <span 
               key={tag} 
-              className="bg-gray-100 px-3 py-1 rounded-full text-sm text-gray-700"
+              className="px-3 py-1 rounded-full text-xs"
+              style={{ backgroundColor: 'var(--color-bg-accent)', color: 'var(--color-text-secondary)' }}
             >
               {tag}
             </span>
@@ -175,36 +162,33 @@ const BlogPostPage = () => {
       </div>
       
       {/* Related Posts */}
-      <section className="mt-12 pt-8 border-t">
-        <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
+      <section className="mt-12 pt-8 border-t" style={{ borderColor: 'var(--color-border)' }}>
+        <h2 className="section-title">Related Articles</h2>
         {relatedPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {relatedPosts.map(relatedPost => (
-              <div key={relatedPost.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img 
-                  src={relatedPost.image_url || "https://via.placeholder.com/800x600"} 
-                  alt={relatedPost.title} 
-                  className="w-full h-48 object-cover" 
-                />
-                <div className="p-6">
-                  <span className="text-blue-600 text-sm font-semibold">
-                    {relatedPost.category ? relatedPost.category.name : 'Uncategorized'}
-                  </span>
-                  <h3 className="text-xl font-bold mb-2 mt-1">{relatedPost.title}</h3>
-                  <p className="text-gray-600 mb-4">
-                    {relatedPost.content.length > 150 
-                      ? `${relatedPost.content.substring(0, 150)}...` 
-                      : relatedPost.content}
-                  </p>
-                  <Link to={`/blog/${relatedPost.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
-                    Read More →
-                  </Link>
-                </div>
-              </div>
+              <Link
+                to={`/blog/${relatedPost.id}`}
+                key={relatedPost.id}
+                className="block rounded-lg border p-5 hover:shadow-sm transition-shadow"
+                style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+              >
+                <span className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-evercore-accent-blue)' }}>
+                  {relatedPost.category ? relatedPost.category.name : 'Uncategorized'}
+                </span>
+                <h3 className="font-serif text-lg font-semibold mb-2 mt-1" style={{ color: 'var(--color-text-primary)' }}>
+                  {relatedPost.title}
+                </h3>
+                <p className="text-sm" style={{ color: 'var(--color-text-secondary)' }}>
+                  {relatedPost.content.length > 120
+                    ? `${relatedPost.content.substring(0, 120)}...`
+                    : relatedPost.content}
+                </p>
+              </Link>
             ))}
           </div>
         ) : (
-          <p>No related articles found.</p>
+          <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>No related articles found.</p>
         )}
       </section>
     </article>

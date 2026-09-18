@@ -12,22 +12,20 @@ const Header = () => {
   return (
     <header className="border-b" style={{ backgroundColor: 'var(--color-header-bg)', color: 'var(--color-header-text)', borderColor: 'var(--color-header-border)' }}>
       <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center py-5">
-          <Link to="/" className="text-xl font-serif font-semibold flex items-center">
+        <div className="flex justify-between items-center py-4">
+          <Link to="/" className="text-lg font-serif font-semibold flex items-center">
             Financial Insights
           </Link>
           
           <nav className="hidden md:block">
-            <ul className="flex space-x-8 items-center"> {/* Added items-center for vertical alignment */}
-              <li><Link to="/" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Home</Link></li>
-              <li><Link to="/blog" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Insights</Link></li>
-              <li><Link to="/watchlist" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Markets</Link></li>
-              <li><Link to="/categories" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Sectors</Link></li>
+            <ul className="flex space-x-6 items-center">
+              <li><Link to="/" className="text-xs font-medium uppercase tracking-wider hover:text-evercore-accent-blue transition py-2">Home</Link></li>
+              <li><Link to="/blog" className="text-xs font-medium uppercase tracking-wider hover:text-evercore-accent-blue transition py-2">Insights</Link></li>
+              <li><Link to="/watchlist" className="text-xs font-medium uppercase tracking-wider hover:text-evercore-accent-blue transition py-2">Markets</Link></li>
               {isAuthenticated && isAdmin() && (
-                <li><Link to="/admin/posts" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Manage Posts</Link></li>
+                <li><Link to="/admin/posts" className="text-xs font-medium uppercase tracking-wider hover:text-evercore-accent-blue transition py-2">Manage</Link></li>
               )}
-              <li><Link to="/about" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">About</Link></li>
-              <li><Link to="/contact" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Contact</Link></li>
+              <li><Link to="/about" className="text-xs font-medium uppercase tracking-wider hover:text-evercore-accent-blue transition py-2">About</Link></li>
             </ul>
           </nav>
           
@@ -105,12 +103,10 @@ const Header = () => {
               <li><Link to="/" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
               <li><Link to="/blog" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Insights</Link></li>
               <li><Link to="/watchlist" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Markets</Link></li>
-              <li><Link to="/categories" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Sectors</Link></li>
               {isAuthenticated && isAdmin() && (
-                <li><Link to="/admin/posts" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Manage Posts</Link></li>
+                <li><Link to="/admin/posts" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Manage</Link></li>
               )}
               <li><Link to="/about" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
-              <li><Link to="/contact" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
               
               {/* Mobile authentication links */}
               <div className="pt-2 border-t border-evercore-gray-200 dark:border-evercore-navy-700">

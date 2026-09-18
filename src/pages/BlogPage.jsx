@@ -75,39 +75,33 @@ const BlogPage = () => {
 
   return (
     <div>
-      <section className="mb-10">
-        <h1 className="text-3xl font-bold mb-4">Financial Insights Blog</h1>
-        <p className="text-gray-600">
-          Explore our articles on financial markets, investment strategies, and economic trends.
+      <section className="mb-8">
+        <h1 className="section-title">Insights</h1>
+        <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
+          Articles on financial markets, investment strategies, and economic trends.
         </p>
       </section>
 
       {/* Search and Filter */}
-      <section className="mb-8">
-        <div className="flex flex-col md:flex-row gap-4 mb-6">
-          <div className="flex-1">
-            <input
-              type="text"
-              placeholder="Search articles..."
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div>
-            <select
-              className="w-full md:w-auto px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              {categories.map(category => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
+      <section className="mb-8 flex flex-col md:flex-row gap-3">
+        <input
+          type="text"
+          placeholder="Search articles..."
+          className="evercore-input flex-1 px-4 py-2 text-sm rounded-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select
+          className="evercore-input px-4 py-2 text-sm rounded-md md:w-56"
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          {categories.map(category => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
       </section>
 
       {/* Blog Posts */}
@@ -121,35 +115,34 @@ const BlogPage = () => {
             <p>{error}</p>
           </div>
         ) : filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredPosts.map(post => (
-              <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img 
-                  src={post.image_url || "https://via.placeholder.com/800x600"} 
-                  alt={post.title} 
-                  className="w-full h-48 object-cover" 
-                />
-                <div className="p-6">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-blue-600 text-sm font-semibold">
-                      {post.category ? post.category.name : 'Uncategorized'}
-                    </span>
-                    <span className="text-gray-500 text-sm">{formatDate(post.created_at)}</span>
-                  </div>
-                  <h3 className="text-xl font-bold mb-2">{post.title}</h3>
-                  <p className="text-gray-600 mb-4">
-                    {post.content.length > 150 
-                      ? `${post.content.substring(0, 150)}...` 
-                      : post.content}
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <Link to={`/blog/${post.id}`} className="text-blue-600 hover:text-blue-800 font-medium">
-                      Read More →
-                    </Link>
-                    <span className="text-gray-500 text-sm">{getReadTime(post.content)}</span>
-                  </div>
+              <Link
+                to={`/blog/${post.id}`}
+                key={post.id}
+                className="block rounded-lg border p-6 hover:shadow-sm transition-shadow"
+                style={{ backgroundColor: 'var(--color-card-bg)', borderColor: 'var(--color-border)' }}
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold" style={{ color: 'var(--color-evercore-accent-blue)' }}>
+                    {post.category ? post.category.name : 'Uncategorized'}
+                  </span>
+                  <span className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
+                    {formatDate(post.created_at)}
+                  </span>
                 </div>
-              </div>
+                <h3 className="font-serif text-lg font-semibold mb-2" style={{ color: 'var(--color-text-primary)' }}>
+                  {post.title}
+                </h3>
+                <p className="text-sm mb-3" style={{ color: 'var(--color-text-secondary)' }}>
+                  {post.content.length > 120
+                    ? `${post.content.substring(0, 120)}...`
+                    : post.content}
+                </p>
+                <span className="text-xs font-medium" style={{ color: 'var(--color-evercore-accent-blue)' }}>
+                  {getReadTime(post.content)} · Read →
+                </span>
+              </Link>
             ))}
           </div>
         ) : (
