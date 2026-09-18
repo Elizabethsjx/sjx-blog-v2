@@ -32,4 +32,5 @@ def read_root():
     return {"message": "Welcome to the Blog API"}
 
 @app.get("/api/health")
-def health_
+def health_check():
+    return {"status": "healthy"}
