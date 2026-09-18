@@ -13,6 +13,7 @@ from __future__ import annotations
 import logging
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from ..core.config import settings
@@ -28,11 +29,31 @@ def _is_configured() -> bool:
     return bool(settings.GOOGLE_SHEET_ID and settings.GOOGLE_SERVICE_ACCOUNT_FILE)
 
 
+def _resolve_credentials_path() -> str:
+    """Resolve the service account JSON path robustly.
+
+    Supports an absolute path or a path relative to the backend directory
+    (so both `credentials/x.json` and `./credentials/x.json` work regardless
+    of the process's current working directory).
+    """
+    raw = settings.GOOGLE_SERVICE_ACCOUNT_FILE or ""
+    if not raw:
+        return ""
+
+    candidate = Path(raw).expanduser()
+    if candidate.is_absolute():
+        return str(candidate)
+
+    # Backend directory is two levels up from this file: services -> app -> backend
+    backend_dir = Path(__file__).resolve().parent.parent.parent
+    return str(backend_dir / raw)
+
+
 def _get_client():
     """Return an authorized gspread client (lazily imported)."""
     import gspread
 
-    return gspread.service_account(filename=settings.GOOGLE_SERVICE_ACCOUNT_FILE)
+    return gspread.service_account(filename=_resolve_credentials_path())
 
 def _normalize(value: Any) -> str:
     """Coerce a cell value to a clean string; blank -> empty string."""
@@ -47,8 +68,12 @@ def _normalize(value: Any) -> str:
 
 
 def _parse_date(value: Any) -> Optional[str]:
-    """Normalize a date cell to ISO 'YYYY-MM-DD', or None if unparseable."""
-    # gspread may already return a datetime object for formatted date cells
+    """Normalize a date cell to ISO 'YYYY-MM-DD', or None if unparseable.
+
+    Handles: 'YYYY-MM-DD', 'DD/MM/YYYY', 'MM/DD/YYYY', 'DD-Mon-YY/YYYY',
+    and yearless 'DD-Mon' (year taken from SHEET_NOTES_DEFAULT_YEAR).
+    gspread datetime objects are handled directly.
+    """
     if isinstance(value, datetime):
         return value.strftime("%Y-%m-%d")
 
@@ -56,15 +81,33 @@ def _parse_date(value: Any) -> Optional[str]:
     if not text:
         return None
 
-    # Try common textual formats: YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY, ...
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%m/%d/%Y", "%d-%m-%Y", "%m-%d-%Y", "%Y/%m/%d"):
+    # Formats with an explicit year
+    for fmt in (
+        "%Y-%m-%d",
+        "%d/%m/%Y",
+        "%m/%d/%Y",
+        "%d-%m-%Y",
+        "%m-%d-%Y",
+        "%d-%b-%Y",
+        "%d-%b-%y",
+        "%Y/%m/%d",
+    ):
         try:
             return datetime.strptime(text, fmt).strftime("%Y-%m-%d")
         except ValueError:
             continue
 
+    # Yearless 'D-Mon' / 'D Mon' formats
+    for fmt in ("%d-%b", "%d %b", "%d-%B", "%d %B"):
+        try:
+            dt = datetime.strptime(text, fmt)
+            return dt.replace(year=settings.SHEET_NOTES_DEFAULT_YEAR).strftime("%Y-%m-%d")
+        except ValueError:
+            continue
+
     # Fall back to the raw string (still groupable, just not reordered perfectly)
     return text
+
 
 def _classify_trend(trend: str) -> str:
     """Map arbitrary trend text to a canonical category for coloring."""

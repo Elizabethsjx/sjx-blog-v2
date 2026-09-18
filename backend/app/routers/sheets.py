@@ -11,9 +11,9 @@ router = APIRouter(
 )
 
 
-def _sort_key(note: DailyNote) -> str:
+def _sort_key(note: dict) -> str:
     # ISO dates sort correctly as strings; blank dates sort last.
-    return note.date or "0000-00-00"
+    return note.get("date") or "0000-00-00"
 
 
 @router.get("/daily-notes", response_model=DailyNotesResponse)

@@ -40,6 +40,7 @@ class Settings(BaseModel):
     GOOGLE_SHEET_ID: Optional[str] = os.getenv("GOOGLE_SHEET_ID", "")
     GOOGLE_SHEET_NOTES_TAB: str = os.getenv("GOOGLE_SHEET_NOTES_TAB", "Sheet1")
     SHEETS_CACHE_MINUTES: int = int(os.getenv("SHEETS_CACHE_MINUTES", "60"))
+    SHEET_NOTES_DEFAULT_YEAR: int = int(os.getenv("SHEET_NOTES_DEFAULT_YEAR", "2024"))
     
     # Email Settings for Password Reset
     EMAILS_FROM_EMAIL: Optional[str] = os.getenv("EMAILS_FROM_EMAIL", "")
