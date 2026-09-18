@@ -123,3 +123,19 @@ export const CategoryService = {
     }
   }
 };
+
+/**
+ * Google Sheets API service (daily market notes)
+ */
+export const SheetsService = {
+  // Get daily market notes from the Google Sheet-backed endpoint
+  async getDailyNotes() {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/daily-notes`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching daily notes:', error.response?.data?.detail || error.message);
+      throw error;
+    }
+  }
+};

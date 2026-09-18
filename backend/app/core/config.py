@@ -34,6 +34,12 @@ class Settings(BaseModel):
     
     # Database
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./data/blog.db")
+
+    # Google Sheets integration (daily market notes)
+    GOOGLE_SERVICE_ACCOUNT_FILE: Optional[str] = os.getenv("GOOGLE_SERVICE_ACCOUNT_FILE", "")
+    GOOGLE_SHEET_ID: Optional[str] = os.getenv("GOOGLE_SHEET_ID", "")
+    GOOGLE_SHEET_NOTES_TAB: str = os.getenv("GOOGLE_SHEET_NOTES_TAB", "Sheet1")
+    SHEETS_CACHE_MINUTES: int = int(os.getenv("SHEETS_CACHE_MINUTES", "60"))
     
     # Email Settings for Password Reset
     EMAILS_FROM_EMAIL: Optional[str] = os.getenv("EMAILS_FROM_EMAIL", "")

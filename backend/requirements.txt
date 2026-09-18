@@ -15,3 +15,5 @@ python-jose[cryptography]==3.3.0
 # Email for password reset
 jinja2==3.1.2
 emails==0.6
+# Google Sheets integration (daily market notes / data feed)
+gspread==5.12.4
