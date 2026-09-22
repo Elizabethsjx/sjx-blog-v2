@@ -123,20 +123,3 @@ class PasswordReset(BaseModel):
 class GoogleAuthRequest(BaseModel):
     code: str
     redirect_uri: str
-
-
-# Daily market notes (Google Sheets) schemas
-class DailyNote(BaseModel):
-    date: Optional[str] = None
-    date_raw: Optional[str] = None
-    stock: Optional[str] = None
-    summary: Optional[str] = None
-    trend: Optional[str] = None
-    trend_class: str = "neutral"
-    link: Optional[str] = None
-
-
-class DailyNotesResponse(BaseModel):
-    items: List[DailyNote]
-    total: int
-    updated_at: Optional[datetime] = None
