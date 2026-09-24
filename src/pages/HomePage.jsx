@@ -1,325 +1,527 @@
-import { Link } from 'react-router-dom';
-import '../assets/css/hero.css';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
-import { useTheme } from '../context/ThemeContext';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { PostService, SheetsService } from "../services/api";
 
-const HomePage = () => {
-  const { darkMode } = useTheme();
-  
+const sampleJournals = [
+  {
+    id: "sample-1",
+    title: "Markets are moving. Do you need to do anything?",
+    summary:
+      "A simpler way to think about market headlines, your time horizon, and the next question to ask.",
+    category: "The bigger picture",
+    date: "Sample journal",
+    demo: true,
+  },
+  {
+    id: "sample-2",
+    title: "A good company. But is it a good investment?",
+    summary:
+      "Why understanding a business is only one part of deciding whether an investment makes sense.",
+    category: "Investing, explained",
+    date: "Sample journal",
+    demo: true,
+  },
+];
+const researchPrompts = [
+  {
+    stock: "Beyond the AI headlines",
+    summary: "Which businesses can turn investment in AI into lasting profits?",
+    tag: "Technology",
+  },
+  {
+    stock: "The interest-rate effect",
+    summary: "How could changing borrowing costs affect companies and funds?",
+    tag: "The economy",
+  },
+  {
+    stock: "Looking beyond one market",
+    summary:
+      "Is a portfolio depending too heavily on a single country or idea?",
+    tag: "Diversification",
+  },
+];
+const watchlist = [
+  {
+    symbol: "AAPL",
+    name: "Apple",
+    sector: "Consumer technology",
+    question: "What could drive the next stage of growth?",
+    risk: "Demand, competition and the price paid for future growth.",
+    letter: "a",
+    tone: "silver",
+  },
+  {
+    symbol: "MSFT",
+    name: "Microsoft",
+    sector: "Software & cloud",
+    question: "Can growth keep pace with investment spending?",
+    risk: "Capital spending, competition and earnings expectations.",
+    letter: "m",
+    tone: "mint",
+  },
+  {
+    symbol: "GOOGL",
+    name: "Alphabet",
+    sector: "Search & digital services",
+    question: "How might competition change the long-term story?",
+    risk: "Advertising demand, regulation and changing search habits.",
+    letter: "g",
+    tone: "sand",
+  },
+];
+
+function plainText(html = "") {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return (doc.body.textContent || "").replace(/\s+/g, " ").trim();
+}
+function formatDate(value) {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime())
+    ? "Journal"
+    : date.toLocaleDateString("en-SG", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+}
+
+export default function HomePage() {
+  const [journals, setJournals] = useState(sampleJournals);
+  const [journalState, setJournalState] = useState("loading");
+  const [notes, setNotes] = useState(researchPrompts);
+  const [notesState, setNotesState] = useState("loading");
+  const [readerPath, setReaderPath] = useState("guided");
+  const [retry, setRetry] = useState(0);
+
+  useEffect(() => {
+    let cancelled = false;
+    setJournalState("loading");
+    setNotesState("loading");
+    PostService.getAllPosts(1, 2)
+      .then((data) => {
+        if (cancelled) return;
+        const posts = (data.items || data.posts || []).slice(0, 2);
+        if (!posts.length) {
+          setJournalState("empty");
+          return;
+        }
+        setJournals(
+          posts.map((post) => ({
+            id: post.id,
+            title: post.title,
+            summary: plainText(post.content).slice(0, 180),
+            category: post.category?.name || "My journal",
+            date: formatDate(post.updated_at || post.created_at),
+            demo: false,
+          })),
+        );
+        setJournalState("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setJournalState("offline");
+      });
+    SheetsService.getDailyNotes()
+      .then((data) => {
+        if (cancelled) return;
+        const items = (data.items || []).slice(0, 3);
+        if (!items.length) {
+          setNotesState("empty");
+          return;
+        }
+        setNotes(items);
+        setNotesState("ready");
+      })
+      .catch(() => {
+        if (!cancelled) setNotesState("offline");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [retry]);
+
   return (
-    <div>
-      {/* Hero Section - Based on Evercore reference */}
-      <section className="hero-section mb-16">
-        <div className="hero-overlay"></div>
-        <img 
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" 
-          alt="Financial district skyline" 
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="hero-content container mx-auto px-6 text-center">
-          <h1 className="hero-title text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
-            Independent Financial Analysis &amp; Market Insights
+    <div className="sjx-home">
+      <section className="sjx-hero" aria-labelledby="sjx-hero-heading">
+        <div className="sjx-hero-art" aria-hidden="true">
+          <div className="sjx-orbit" />
+          <div className="sjx-orbit sjx-orbit-two" />
+          <div className="sjx-globe" />
+          <div className="sjx-light-line" />
+        </div>
+        <div className="sjx-wrap sjx-hero-copy">
+          <span className="sjx-pill sjx-hero-pill">
+            <span className="sjx-dot" /> A personal perspective on investing
+          </span>
+          <h1 id="sjx-hero-heading">
+            A clearer market view.
+            <br />
+            <span>A more confident you.</span>
           </h1>
-          <p className="hero-description text-lg md:text-xl">
-            Providing in-depth analysis and strategic perspectives on financial markets, investment opportunities, and economic trends.
+          <p>
+            What's happening, what I'm watching, and what it could mean for your
+            money. Let's make sense of it together.
           </p>
-          <Button 
-            to="/blog"
-            variant="outline"
-            size="lg"
-            className="hero-cta"
-          >
-            View Our Insights
-          </Button>
-        </div>
-      </section>
-
-      {/* Market Overview Section */}
-      <section className="mb-16 container mx-auto px-6">
-        <h2 className="section-title">Market Overview</h2>
-        <Card className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
-              <thead style={{ backgroundColor: 'var(--color-table-header-bg)', color: 'var(--color-table-header-text)' }}>
-                <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Symbol / Name
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Price
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Change
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">
-                    Chart
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
-                {[
-                  {
-                    id: 1,
-                    symbol: 'AAPL',
-                    name: 'Apple Inc.',
-                    price: 187.62,
-                    change: 1.24,
-                    changePercent: 0.67,
-                    chartColor: 'green'
-                  },
-                  {
-                    id: 2,
-                    symbol: 'MSFT',
-                    name: 'Microsoft Corporation',
-                    price: 329.37,
-                    change: -2.76,
-                    changePercent: -0.83,
-                    chartColor: 'red'
-                  },
-                  {
-                    id: 3,
-                    symbol: 'GOOGL',
-                    name: 'Alphabet Inc.',
-                    price: 142.93,
-                    change: 1.86,
-                    changePercent: 1.32,
-                    chartColor: 'green'
-                  },
-                  {
-                    id: 4,
-                    symbol: 'AMZN',
-                    name: 'Amazon.com Inc.',
-                    price: 148.25,
-                    change: -0.35,
-                    changePercent: -0.24,
-                    chartColor: 'red'
-                  },
-                  {
-                    id: 5,
-                    symbol: 'TSLA',
-                    name: 'Tesla, Inc.',
-                    price: 217.83,
-                    change: 6.52,
-                    changePercent: 3.08,
-                    chartColor: 'green'
-                  }
-                ].map((stock) => (
-                  <tr key={stock.id} className="hover:bg-evercore-gray-50 dark:hover:bg-evercore-navy-800 transition">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex flex-col">
-                        <div className="text-sm font-medium">{stock.symbol}</div>
-                        <div className="text-sm text-evercore-navy-500 dark:text-evercore-navy-400">{stock.name}</div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm">${stock.price.toFixed(2)}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className={`text-sm ${stock.changePercent >= 0 ? 'evercore-positive' : 'evercore-negative'}`}>
-                        <span>{stock.change >= 0 ? '+' : ''}{stock.change.toFixed(2)}</span>
-                        <span className="ml-1">({stock.changePercent >= 0 ? '+' : ''}{stock.changePercent.toFixed(2)}%)</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {/* Mini chart component */}
-                      <svg width={80} height={30} className="stock-mini-chart">
-                        <polyline
-                          points={(() => {
-                            // Generate random points for the mini chart
-                            const points = [];
-                            const numPoints = 10;
-                            let y = 15; // Start in the middle
-                            
-                            for (let i = 0; i < numPoints; i++) {
-                              // Add some random variation for the chart
-                              const randomChange = Math.random() * 5 - 2.5;
-                              y = Math.max(5, Math.min(25, y + randomChange));
-                              points.push(`${(i / (numPoints - 1)) * 80},${y}`);
-                            }
-                            
-                            return points.join(' ');
-                          })()}
-                          stroke={stock.chartColor === 'green' ? 'var(--color-positive)' : 'var(--color-negative)'}
-                          strokeWidth="1.5"
-                          fill="none"
-                        />
-                      </svg>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Link to={`/stocks/${stock.symbol}`} className="text-evercore-accent-blue hover:text-evercore-navy-700 underline-offset-2 hover:underline text-sm py-1 px-3">View</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="sjx-actions">
+            <a className="sjx-button sjx-button-light" href="#latest-journals">
+              Read my latest journals <span aria-hidden="true">↗</span>
+            </a>
+            <a className="sjx-button sjx-button-glass" href="#get-started">
+              New to investing? Start here <span aria-hidden="true">→</span>
+            </a>
           </div>
-          <div className="px-6 py-4 border-t border-evercore-gray-200 dark:border-evercore-navy-700 text-right">
-            <Button to="/watchlist" variant="text">View All Markets</Button>
+          <div className="sjx-hero-signature">
+            <span className="sjx-avatar">J</span>
+            <span>
+              Notes by Junxi <span className="sjx-signature-divider">/</span>{" "}
+              Finance in everyday language
+            </span>
           </div>
-        </Card>
-      </section>
-
-      {/* Featured Insights Section */}
-      <section className="mb-16 container mx-auto px-6">
-        <h2 className="section-title">Featured Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Featured Post 1 */}
-          <Card className="overflow-hidden" hover={true}>
-            <img src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Market Analysis" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Stock Analysis</div>
-              <h3 className="section-subtitle">Understanding Market Volatility in 2025</h3>
-              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">An in-depth look at what's driving market fluctuations this year and strategies to navigate uncertainty.</p>
-              <Button to="/blog/1" variant="text">Read Analysis</Button>
-            </div>
-          </Card>
-
-          {/* Featured Post 2 */}
-          <Card className="overflow-hidden" hover={true}>
-            <img src="https://images.unsplash.com/photo-1518546305927-5a555bb7020d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Cryptocurrency" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Cryptocurrency</div>
-              <h3 className="section-subtitle">The Evolution of Blockchain and Financial Markets</h3>
-              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">How blockchain technology continues to reshape traditional finance and investment opportunities.</p>
-              <Button to="/blog/2" variant="text">Read Analysis</Button>
-            </div>
-          </Card>
-
-          {/* Featured Post 3 */}
-          <Card className="overflow-hidden" hover={true}>
-            <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400&q=80" alt="Investment Strategy" className="w-full h-48 object-cover" />
-            <div className="p-6">
-              <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Investment Strategy</div>
-              <h3 className="section-subtitle">Building a Resilient Portfolio for Long-term Growth</h3>
-              <p className="text-evercore-navy-600 dark:text-evercore-navy-300 text-sm mb-4">Essential strategies for creating a diversified investment portfolio that can withstand market turbulence.</p>
-              <Button to="/blog/3" variant="text">Read Analysis</Button>
-            </div>
-          </Card>
-        </div>
-        <div className="text-center mt-8">
-          <Button to="/blog" variant="outline">View All Insights</Button>
         </div>
       </section>
 
-      {/* Investment Sectors Section */}
-      <section className="mb-16 container mx-auto px-6">
-        <h2 className="section-title">Investment Sectors</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="p-6" hover={true}>
-            <h3 className="font-serif text-lg font-semibold mb-3">Technology</h3>
-            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Analysis of tech sector trends, emerging technologies, and growth opportunities.</p>
-            <Button to="/categories/technology" variant="text" size="sm">Explore</Button>
-          </Card>
-          
-          <Card className="p-6" hover={true}>
-            <h3 className="font-serif text-lg font-semibold mb-3">Healthcare</h3>
-            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Insights on healthcare innovations, regulatory impacts, and investment considerations.</p>
-            <Button to="/categories/healthcare" variant="text" size="sm">Explore</Button>
-          </Card>
-          
-          <Card className="p-6" hover={true}>
-            <h3 className="font-serif text-lg font-semibold mb-3">Financials</h3>
-            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Market intelligence on banking, fintech, and changing financial landscapes.</p>
-            <Button to="/categories/financials" variant="text" size="sm">Explore</Button>
-          </Card>
-          
-          <Card className="p-6" hover={true}>
-            <h3 className="font-serif text-lg font-semibold mb-3">Energy</h3>
-            <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-4">Research on traditional and renewable energy markets and sustainability trends.</p>
-            <Button to="/categories/energy" variant="text" size="sm">Explore</Button>
-          </Card>
-        </div>
-      </section>
+      <div className="sjx-wrap">
+        <section
+          className="sjx-journals-section"
+          id="latest-journals"
+          aria-labelledby="sjx-journals-heading"
+        >
+          <div className="sjx-section-heading">
+            <div>
+              <span className="sjx-kicker">01 — FROM MY DESK</span>
+              <h2 id="sjx-journals-heading">Your next five-minute read.</h2>
+            </div>
+            <Link className="sjx-inline-link" to="/blog">
+              All journals <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+          {journalState !== "ready" && (
+            <div className="sjx-content-status" role="status">
+              <span>
+                {journalState === "loading"
+                  ? "Connecting to the journal. Sample layouts shown below."
+                  : journalState === "empty"
+                    ? "Your first journals will appear here. These are sample layouts."
+                    : "The journal is temporarily unavailable. Sample layouts shown below."}
+              </span>
+              {journalState === "offline" && (
+                <button onClick={() => setRetry((value) => value + 1)}>
+                  Try again
+                </button>
+              )}
+            </div>
+          )}
+          <div className="sjx-journal-grid">
+            {journals.map((journal, index) => (
+              <article
+                className={`sjx-journal-card ${index === 0 ? "sjx-journal-featured" : ""}`}
+                key={journal.id}
+              >
+                <div
+                  className={`sjx-journal-art sjx-art-${index}`}
+                  aria-hidden="true"
+                >
+                  <div className="sjx-art-ring" />
+                  <div className="sjx-art-ring sjx-art-ring-2" />
+                  <div className="sjx-art-sphere" />
+                  <span>
+                    {index === 0 ? "A LITTLE PERSPECTIVE" : "A BETTER QUESTION"}
+                  </span>
+                </div>
+                <div className="sjx-journal-content">
+                  <div className="sjx-card-meta">
+                    <span>{journal.category}</span>
+                    <span>{journal.date}</span>
+                  </div>
+                  <h3>{journal.title}</h3>
+                  <p>{journal.summary}</p>
+                  {journal.demo ? (
+                    <details className="sjx-journal-details">
+                      <summary>
+                        What you'll find in my journals{" "}
+                        <span aria-hidden="true">↗</span>
+                      </summary>
+                      <p>
+                        What happened → why it matters → my view → what could
+                        change my mind. These sample headlines show the layout;
+                        published journals will replace them.
+                      </p>
+                    </details>
+                  ) : (
+                    <Link
+                      className="sjx-inline-link"
+                      to={`/blog/${journal.id}`}
+                    >
+                      Read the journal <span aria-hidden="true">↗</span>
+                    </Link>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
 
-      {/* Research & Analysis Section */}
-      <section className="mb-16 container mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-12">
-          <div className="lg:col-span-2">
-            <h2 className="section-title">Research Services</h2>
-            <p className="text-evercore-navy-700 dark:text-evercore-navy-300 mb-6">
-              Our team provides in-depth financial research and market analysis to help investors make informed decisions in an increasingly complex global landscape.
+        <section
+          className="sjx-section"
+          id="research-trends"
+          aria-labelledby="sjx-trends-heading"
+        >
+          <div className="sjx-section-heading">
+            <div>
+              <span className="sjx-kicker">02 — CONNECTING THE DOTS</span>
+              <h2 id="sjx-trends-heading">What's on my radar.</h2>
+              <p>The ideas behind the headlines, explained simply.</p>
+            </div>
+            <span className="sjx-pill">
+              {notesState === "ready"
+                ? "From my market notes"
+                : "Example research prompts"}
+            </span>
+          </div>
+          <div className="sjx-trend-grid">
+            {notes.map((note, index) => (
+              <article className="sjx-trend" key={`${note.stock}-${index}`}>
+                <div className="sjx-trend-top">
+                  <span className="sjx-trend-number">0{index + 1}</span>
+                  <span>{note.tag || "Market note"}</span>
+                </div>
+                <h3>{note.stock || "A market idea"}</h3>
+                <p>{note.summary || "More research to follow."}</p>
+                {note.link && /^https?:\/\//i.test(note.link) && (
+                  <a
+                    className="sjx-inline-link"
+                    href={note.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Read the source ↗
+                  </a>
+                )}
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section
+          className="sjx-portfolio sjx-section"
+          id="client-portfolio"
+          aria-labelledby="sjx-portfolio-heading"
+        >
+          <div className="sjx-portfolio-story">
+            <span className="sjx-pill">GREAT EASTERN · CLIENT JOURNEY</span>
+            <h2 id="sjx-portfolio-heading">
+              A plan for real life.
+              <br />
+              <span>Progress you can follow.</span>
+            </h2>
+            <p>
+              Behind every portfolio is a person and a goal. Here, I'll share
+              the approach, the decisions, and the progress along the way.
             </p>
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-start">
-                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span>Macroeconomic trend analysis</span>
-              </li>
-              <li className="flex items-start">
-                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span>Sector-specific investment opportunities</span>
-              </li>
-              <li className="flex items-start">
-                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span>Risk assessment and portfolio optimization</span>
-              </li>
-              <li className="flex items-start">
-                <svg className="h-5 w-5 text-evercore-accent-blue mt-0.5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
-                </svg>
-                <span>Customized investment strategy development</span>
-              </li>
-            </ul>
-            <Button to="/about" variant="primary">Learn More</Button>
+            <Link className="sjx-button sjx-button-dark" to="/contact">
+              Talk about your goals <span aria-hidden="true">↗</span>
+            </Link>
+            <small>Great Eastern investment-linked policy (ILP)</small>
           </div>
-          
-          <div className="lg:col-span-3">
-            <Card className="p-8" bordered={false} hover={false}>
-              <h3 className="font-serif text-xl font-semibold mb-4">Federal Reserve & Monetary Policy</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Policy Item 1 */}
-                <div className="border-b border-evercore-gray-200 dark:border-evercore-navy-700 pb-4">
-                  <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">FOMC</div>
-                  <h4 className="font-medium text-base mb-2">Interest Rate Outlook: Fed's Next Moves</h4>
-                  <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-3">Expert analysis of recent FOMC statements and what they indicate about future monetary policy.</p>
-                  <Button to="/fomc/interest-rates" variant="text" size="sm">Read Analysis</Button>
-                </div>
-                
-                {/* Policy Item 2 */}
-                <div className="border-b border-evercore-gray-200 dark:border-evercore-navy-700 pb-4">
-                  <div className="text-xs text-evercore-navy-500 dark:text-evercore-navy-400 uppercase tracking-wider mb-2">Monetary Policy</div>
-                  <h4 className="font-medium text-base mb-2">Quantitative Easing: Impact on Markets</h4>
-                  <p className="text-sm text-evercore-navy-600 dark:text-evercore-navy-300 mb-3">How central bank asset purchases affect different asset classes and investment strategies.</p>
-                  <Button to="/fomc/quantitative-easing" variant="text" size="sm">Read Analysis</Button>
-                </div>
+          <div className="sjx-portfolio-preview">
+            <div className="sjx-portfolio-preview-top">
+              <span className="sjx-portfolio-icon" aria-hidden="true">
+                ↗
+              </span>
+              <span>Portfolio update</span>
+              <span className="sjx-pill">Coming soon</span>
+            </div>
+            <div className="sjx-return-placeholder">
+              <span>Client portfolio return</span>
+              <strong>
+                Every number.
+                <br />
+                With its full story.
+              </strong>
+              <p>Verified results will be added here.</p>
+            </div>
+            <dl>
+              <div>
+                <dt>Investment goal</dt>
+                <dd>To be shared</dd>
               </div>
-            </Card>
+              <div>
+                <dt>Time period</dt>
+                <dd>To be confirmed</dd>
+              </div>
+              <div>
+                <dt>Funds & charges</dt>
+                <dd>Included in the full update</dd>
+              </div>
+            </dl>
+            <p className="sjx-small-print">
+              No performance figures shown yet. Past performance does not
+              guarantee future results.
+            </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Newsletter Section */}
-      <section className="mb-16 container mx-auto px-6">
-        <Card className="p-8">
-          <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="font-serif text-2xl font-semibold mb-3">Subscribe to Our Insights</h2>
-              <p className="text-evercore-navy-600 dark:text-evercore-navy-300">
-                Receive weekly market analysis and investment insights from our expert research team.
+        <section
+          className="sjx-section"
+          id="weekly-watchlist"
+          aria-labelledby="sjx-watchlist-heading"
+        >
+          <div className="sjx-section-heading">
+            <div>
+              <span className="sjx-kicker">03 — COMPANIES I'M EXPLORING</span>
+              <h2 id="sjx-watchlist-heading">A watchlist. With the why.</h2>
+              <p>
+                Start with the business, the question, and what could go wrong.
               </p>
             </div>
-            <div className="flex flex-col md:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="Your email address"
-                className="evercore-input px-4 py-2 md:flex-1"
-              />
-              <Button variant="primary">Subscribe</Button>
+            <Link className="sjx-inline-link" to="/watchlist">
+              Explore the watchlist <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+          <div className="sjx-watch-grid">
+            {watchlist.map((stock) => (
+              <article className="sjx-watch-card" key={stock.symbol}>
+                <div className="sjx-watch-top">
+                  <span
+                    className={`sjx-stock-logo ${stock.tone}`}
+                    aria-hidden="true"
+                  >
+                    {stock.letter}
+                  </span>
+                  <div>
+                    <h3>{stock.name}</h3>
+                    <span>
+                      {stock.symbol} · {stock.sector}
+                    </span>
+                  </div>
+                </div>
+                <span className="sjx-pill">Sample research idea</span>
+                <h4>{stock.question}</h4>
+                <details>
+                  <summary>
+                    The risks to research <span aria-hidden="true">+</span>
+                  </summary>
+                  <p>{stock.risk}</p>
+                </details>
+              </article>
+            ))}
+          </div>
+          <p className="sjx-small-print">
+            Example entries for this layout, not current recommendations. Your
+            weekly research will replace these.
+          </p>
+        </section>
+
+        <section
+          className="sjx-start sjx-section"
+          id="get-started"
+          aria-labelledby="sjx-start-heading"
+        >
+          <div className="sjx-start-intro">
+            <span className="sjx-kicker">YOUR NEXT CHAPTER</span>
+            <h2 id="sjx-start-heading">
+              You don't need to
+              <br /> figure it all out alone.
+            </h2>
+            <p>Choose where you'd like to start.</p>
+          </div>
+          <div className="sjx-start-panel">
+            <div
+              className="sjx-path-selector"
+              role="group"
+              aria-label="What would you like to learn about?"
+            >
+              <button
+                aria-pressed={readerPath === "guided"}
+                onClick={() => setReaderPath("guided")}
+              >
+                Explore GE ILPs with me
+              </button>
+              <button
+                aria-pressed={readerPath === "stocks"}
+                onClick={() => setReaderPath("stocks")}
+              >
+                Research individual stocks
+              </button>
+            </div>
+            <div className="sjx-path-content" aria-live="polite">
+              {readerPath === "guided" ? (
+                <>
+                  <h3>Understand the plan. Then decide.</h3>
+                  <p>
+                    Learn how an investment-linked policy works, the funds
+                    available, its fees and risks, and what happens if you
+                    withdraw early. Then we can discuss your goals.
+                  </p>
+                  <Link className="sjx-button sjx-button-light" to="/contact">
+                    Let's have a conversation <span aria-hidden="true">↗</span>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <h3>Get to know the business first.</h3>
+                  <p>
+                    Explore company research, understand the main risks, and
+                    develop your own questions. My stock watchlist is separate
+                    from the Great Eastern ILP journey.
+                  </p>
+                  <Link className="sjx-button sjx-button-light" to="/watchlist">
+                    Explore company research <span aria-hidden="true">↗</span>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
-        </Card>
-      </section>
+        </section>
+        <section className="sjx-basics" aria-labelledby="sjx-basics-heading">
+          <div>
+            <span className="sjx-kicker">NO FINANCE BACKGROUND NEEDED</span>
+            <h2 id="sjx-basics-heading">A few questions to start with.</h2>
+          </div>
+          <div>
+            <details>
+              <summary>
+                What's the difference between stocks and funds?{" "}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>
+                A stock represents ownership in a company. A fund pools
+                investors' money to hold investments according to a stated
+                strategy. The risks depend on what you own, not simply how many
+                investments there are.
+              </p>
+            </details>
+            <details>
+              <summary>
+                What is an investment-linked policy?{" "}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>
+                An ILP combines life insurance with investment-linked funds.
+                Policy charges, investment risks and withdrawal terms matter
+                alongside fund performance.{" "}
+                <a
+                  href="https://www.greateasternlife.com/sg/en/personal-insurance/lifepedia/savings-and-investment/5-things-must-understand-before-buying-investment-linked-policy.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Read Great Eastern's guide ↗
+                </a>
+              </p>
+            </details>
+            <details>
+              <summary>
+                Does a watchlist mean I should buy?{" "}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>
+                No. A watchlist is a starting point for research. Your goals,
+                time horizon, risk tolerance and financial situation still need
+                to be considered.
+              </p>
+            </details>
+          </div>
+        </section>
+      </div>
     </div>
   );
-};
-
-export default HomePage;
+}

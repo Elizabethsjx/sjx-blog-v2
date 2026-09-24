@@ -156,86 +156,74 @@ const SuggestedStocksPage = () => {
   });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Hero Section */}
-      <section className="mb-12 bg-gradient-to-r from-blue-800 to-blue-600 rounded-lg p-8 text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">Suggested Stocks</h1>
-        <p className="text-xl mb-6">Track trending stocks and market movers in real-time.</p>
-        <p className="text-lg opacity-80">Stay informed on price changes, trends, and market shifts.</p>
+    <div>
+      {/* Page header */}
+      <section className="mb-8">
+        <h1 className="section-title">Markets</h1>
+        <p className="text-sm" style={{ color: 'var(--color-text-muted)' }}>
+          Trending stocks and market movers on our radar.
+        </p>
       </section>
 
       {/* Controls Section */}
-      <section className="mb-8 bg-white p-6 rounded-lg shadow-md">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div>
-              <label htmlFor="filter" className="block text-sm font-medium text-gray-700 mb-1">Filter</label>
-              <select
-                id="filter"
-                className="border border-gray-300 rounded-md px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={filterOption}
-                onChange={(e) => setFilterOption(e.target.value)}
-              >
-                <option value="all">All Stocks</option>
-                <option value="gainers">Gainers</option>
-                <option value="losers">Losers</option>
-              </select>
-            </div>
-            <div>
-              <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-1">Sort By</label>
-              <select
-                id="sort"
-                className="border border-gray-300 rounded-md px-3 py-2 w-full sm:w-auto focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-              >
-                <option value="name">Name</option>
-                <option value="price">Price</option>
-                <option value="change">% Change</option>
-                <option value="volume">Volume</option>
-              </select>
-            </div>
-          </div>
-          <div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition">
-              Add New Stock
-            </button>
-          </div>
+      <section className="mb-6 flex flex-col sm:flex-row sm:items-end gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <select
+            id="filter"
+            className="evercore-input px-3 py-2 text-sm rounded-md"
+            value={filterOption}
+            onChange={(e) => setFilterOption(e.target.value)}
+          >
+            <option value="all">All Stocks</option>
+            <option value="gainers">Gainers</option>
+            <option value="losers">Losers</option>
+          </select>
+          <select
+            id="sort"
+            className="evercore-input px-3 py-2 text-sm rounded-md"
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+          >
+            <option value="name">Name</option>
+            <option value="price">Price</option>
+            <option value="change">% Change</option>
+            <option value="volume">Volume</option>
+          </select>
         </div>
       </section>
 
       {/* Suggested Stocks Table */}
-      <section className="bg-white rounded-lg shadow-md overflow-hidden mb-12">
+      <section className="rounded-lg border overflow-hidden mb-12" style={{ borderColor: 'var(--color-border)' }}>
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+          <table className="min-w-full divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
+            <thead style={{ backgroundColor: 'var(--color-table-header-bg)' }}>
               <tr>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Symbol / Name
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Price
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Change
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Chart
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Volume
                 </th>
-                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Market Cap
                 </th>
-                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--color-table-header-text)' }}>
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="divide-y" style={{ borderColor: 'var(--color-table-border)' }}>
               {sortedStocks.map((stock) => (
-                <tr key={stock.id} className="hover:bg-gray-50 transition">
+                <tr key={stock.id} className="hover:bg-opacity-50 transition" style={{ backgroundColor: 'var(--color-card-bg)' }}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col">
                       <div className="text-sm font-medium text-gray-900">{stock.symbol}</div>

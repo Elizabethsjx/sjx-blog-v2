@@ -1,70 +1,41 @@
-/* Evercore-inspired hero styling */
-.hero-section {
-  position: relative;
-  overflow: hidden;
+/* Slim hero band — no photo, just a compact navy strip */
+.hero-band {
   background-color: var(--color-evercore-navy-900);
   color: white;
+  padding: 3rem 1rem;
+  text-align: center;
 }
 
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(16, 42, 67, 0.7); /* Evercore navy with opacity */
-  z-index: 1;
-}
-
-.hero-content {
-  position: relative;
-  z-index: 2;
-  padding: 5rem 1rem;
-}
-
-.hero-title {
+.hero-band-title {
   font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 2rem;
   font-weight: 600;
-  color: white;
-  letter-spacing: -0.5px;
-  line-height: 1.2;
-  margin-bottom: 1.5rem;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
 }
 
-.hero-description {
-  font-weight: 400;
-  line-height: 1.5;
-  max-width: 800px;
-  margin: 0 auto 2rem;
-  color: rgba(255, 255, 255, 0.9);
+.hero-band-sub {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 640px;
+  margin: 0 auto;
 }
 
-.hero-cta {
-  display: inline-block;
-  background-color: white;
-  color: var(--color-evercore-navy-900);
-  font-size: 0.875rem;
-  font-weight: 600;
-  padding: 0.75rem 1.5rem;
-  transition: all 0.2s ease;
-  border: none;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+@media (min-width: 768px) {
+  .hero-band-title {
+    font-size: 2.5rem;
+  }
 }
 
-.hero-cta:hover {
-  background-color: var(--color-evercore-navy-50);
-  color: var(--color-evercore-navy-900);
-}
-
+/* Section title — Georgia, small underline accent */
 .section-title {
   font-family: Georgia, 'Times New Roman', Times, serif;
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 600;
   color: var(--color-evercore-navy-900);
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   position: relative;
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
 }
 
 .section-title::after {
@@ -72,7 +43,7 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  width: 50px;
+  width: 40px;
   height: 2px;
   background-color: var(--color-evercore-accent-blue);
 }
@@ -85,14 +56,3 @@
   background-color: var(--color-evercore-navy-400);
 }
 
-.section-subtitle {
-  font-family: Georgia, 'Times New Roman', Times, serif;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--color-evercore-navy-700);
-  margin-bottom: 1rem;
-}
-
-.dark .section-subtitle {
-  color: var(--color-evercore-navy-300);
-}

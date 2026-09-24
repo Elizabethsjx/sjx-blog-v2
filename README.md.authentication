@@ -1,0 +1,150 @@
+# Authentication System Setup
+
+This guide provides instructions for setting up the authentication system for the blog application.
+
+## Features
+
+- Email/Password authentication
+- Google OAuth authentication
+- JWT-based authentication with refresh tokens
+- Password reset functionality
+- Role-based authorization (admin/user)
+- Protected routes in the frontend
+
+## Backend Setup
+
+1. Install the required dependencies:
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+2. Create a `.env` file in the project root (copy from `.env.sample`):
+
+```bash
+cp .env.sample .env
+```
+
+3. Update the `.env` file with your credentials:
+   - Generate a secure `SECRET_KEY`
+   - Update Google OAuth credentials
+   - Configure email settings for password reset (optional)
+
+4. Initialize the database with the new user model:
+
+```bash
+cd backend
+python run.py
+```
+
+## Frontend Setup
+
+1. Install the required dependencies:
+
+```bash
+npm install
+```
+
+2. Create a `.env` file in the project root (if not created already):
+
+```bash
+cp .env.sample .env
+```
+
+3. Update the Google OAuth client ID in the `.env` file and in `src/main.jsx`.
+
+## Google OAuth Setup
+
+1. Go to the [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select an existing one
+3. Navigate to "APIs & Services" > "Credentials"
+4. Create an OAuth client ID for a Web application
+5. Add the following authorized redirect URIs:
+   - `http://localhost:8000/api/auth/google/callback` (backend)
+   - `http://localhost:5173/google-callback` (frontend)
+6. Copy the client ID and client secret to your `.env` file
+
+## Authentication Flow
+
+### Email/Password Registration
+1. User navigates to the registration page
+2. User fills out the registration form
+3. Backend creates a new user in the database
+4. User is redirected to the login page
+
+### Email/Password Login
+1. User navigates to the login page
+2. User enters email and password
+3. Backend validates credentials and issues a JWT token
+4. User is redirected to the previous page or home
+
+### Google OAuth Login
+1. User clicks "Sign in with Google" button
+2. User is redirected to Google's authentication page
+3. After authentication, Google redirects back to the application
+4. Backend creates a new user (if needed) and issues a JWT token
+5. User is redirected to the previous page or home
+
+### Password Reset
+1. User navigates to the forgot password page
+2. User enters their email address
+3. Backend sends a password reset link to the email (in production)
+4. User clicks the link and is redirected to the reset password page
+5. User enters a new password
+6. User is redirected to the login page
+
+## Protected Routes
+
+Routes can be protected using the `ProtectedRoute` component:
+
+```jsx
+<Route path="/protected" element={
+  <ProtectedRoute>
+    <ProtectedPage />
+  </ProtectedRoute>
+} />
+```
+
+For admin-only routes, use the `requireAdmin` prop:
+
+```jsx
+<Route path="/admin" element={
+  <ProtectedRoute requireAdmin={true}>
+    <AdminPage />
+  </ProtectedRoute>
+} />
+```
+
+## Using the Authentication Context
+
+The `useAuth` hook provides access to the authentication context:
+
+```jsx
+import { useAuth } from '../context/AuthContext';
+
+function MyComponent() {
+  const { 
+    user, 
+    isAuthenticated, 
+    login, 
+    logout, 
+    register 
+  } = useAuth();
+  
+  // Use the auth functions and state
+}
+```
+
+Available properties and functions:
+- `user`: The currently authenticated user object
+- `isAuthenticated`: Boolean indicating if a user is authenticated
+- `loading`: Boolean indicating if auth is being loaded/processed
+- `error`: Any authentication error message
+- `login(email, password)`: Login with email and password
+- `loginWithGoogle(code, redirectUri)`: Login with Google OAuth
+- `register(userData)`: Register a new user
+- `logout()`: Log out the current user
+- `requestPasswordReset(email)`: Request a password reset
+- `resetPassword(token, newPassword)`: Reset password with token
+- `isAdmin()`: Check if the current user has admin privileges

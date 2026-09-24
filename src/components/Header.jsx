@@ -1,79 +1,118 @@
-import { Link } from 'react-router-dom';
-import { useTheme } from '../context/ThemeContext';
-import { useState } from 'react';
-import Button from './ui/Button';
+import { Link, NavLink } from "react-router-dom";
+import { useState } from "react";
+import { useTheme } from "../context/ThemeContext";
+import { useAuth } from "../context/AuthContext";
 
-const Header = () => {
+export default function Header() {
   const { darkMode, toggleTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
-  return (
-    <header className="border-b" style={{ backgroundColor: 'var(--color-header-bg)', color: 'var(--color-header-text)', borderColor: 'var(--color-header-border)' }}>
-      <div className="container mx-auto px-6">
-        <div className="flex justify-between items-center py-5">
-          <Link to="/" className="text-xl font-serif font-semibold flex items-center">
-            Financial Insights
+  const { user, isAuthenticated, isAdmin, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const closeMenu = () => setMenuOpen(false);
+  const links = [
+    ["/", "Home"],
+    ["/blog", "My journal"],
+    ["/watchlist", "Watchlist"],
+    ["/about", "About me"],
+  ];
+  const accountLinks = (
+    <>
+      {isAuthenticated ? (
+        <>
+          <Link to="/profile" onClick={closeMenu}>
+            {user?.name || "Profile"}
           </Link>
-          
-          <nav className="hidden md:block">
-            <ul className="flex space-x-8">
-              <li><Link to="/" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Home</Link></li>
-              <li><Link to="/blog" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Insights</Link></li>
-              <li><Link to="/watchlist" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Markets</Link></li>
-              <li><Link to="/categories" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Sectors</Link></li>
-              <li><Link to="/about" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">About</Link></li>
-              <li><Link to="/contact" className="text-sm font-medium hover:text-evercore-accent-blue transition py-2">Contact</Link></li>
-            </ul>
-          </nav>
-          
-          <div className="flex items-center space-x-4">
-            {/* Theme Toggle Button */}
-            <button 
-              onClick={toggleTheme}
-              className="p-2 text-evercore-navy-600 dark:text-evercore-navy-300"
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {darkMode ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-              )}
-            </button>
-            
-            {/* Mobile menu button */}
-            <button 
-              className="md:hidden text-evercore-navy-700 dark:text-evercore-navy-300"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-              </svg>
-            </button>
-          </div>
+          <button
+            onClick={() => {
+              logout();
+              closeMenu();
+            }}
+          >
+            Log out
+          </button>
+        </>
+      ) : (
+        <>
+          <Link to="/login" onClick={closeMenu}>
+            Log in
+          </Link>
+          <Link to="/register" onClick={closeMenu}>
+            Register
+          </Link>
+        </>
+      )}
+    </>
+  );
+  return (
+    <header className="sjx-header">
+      <a className="sjx-skip" href="#main-content">
+        Skip to content
+      </a>
+      <div className="sjx-wrap sjx-header-inner">
+        <Link className="sjx-logo" to="/" onClick={closeMenu}>
+          <span className="sjx-logo-mark" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <span>
+            sjx<span className="sjx-logo-sub">WITH JUNXI</span>
+          </span>
+        </Link>
+        <nav className="sjx-desktop-nav" aria-label="Main navigation">
+          {links.map(([to, label]) => (
+            <NavLink end={to === "/"} to={to} key={to}>
+              {label}
+            </NavLink>
+          ))}
+          {isAuthenticated && isAdmin() && (
+            <NavLink to="/admin/posts">Manage</NavLink>
+          )}
+        </nav>
+        <div className="sjx-header-actions">
+          <button
+            className="sjx-theme-toggle"
+            aria-label={
+              darkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            onClick={toggleTheme}
+          >
+            {darkMode ? "☼" : "◐"}
+          </button>
+          <Link className="sjx-header-contact" to="/contact">
+            Let's talk <span aria-hidden="true">↗</span>
+          </Link>
+          <button
+            className="sjx-menu-toggle"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="sjx-mobile-nav"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? "Close −" : "Menu +"}
+          </button>
         </div>
       </div>
-      
-      {/* Mobile menu, show/hide based on menu state */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-evercore-gray-200 dark:border-evercore-navy-700">
-          <nav className="container mx-auto px-6 py-3">
-            <ul className="space-y-3">
-              <li><Link to="/" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Home</Link></li>
-              <li><Link to="/blog" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Insights</Link></li>
-              <li><Link to="/watchlist" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Markets</Link></li>
-              <li><Link to="/categories" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Sectors</Link></li>
-              <li><Link to="/about" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>About</Link></li>
-              <li><Link to="/contact" className="block py-1 text-sm hover:text-evercore-accent-blue transition" onClick={() => setMobileMenuOpen(false)}>Contact</Link></li>
-            </ul>
-          </nav>
-        </div>
+      {menuOpen && (
+        <nav
+          className="sjx-wrap sjx-mobile-nav"
+          id="sjx-mobile-nav"
+          aria-label="Mobile navigation"
+        >
+          {links.map(([to, label]) => (
+            <NavLink end={to === "/"} to={to} key={to} onClick={closeMenu}>
+              {label}
+              <span aria-hidden="true">↗</span>
+            </NavLink>
+          ))}
+          {isAuthenticated && isAdmin() && (
+            <NavLink to="/admin/posts" onClick={closeMenu}>
+              Manage
+            </NavLink>
+          )}
+          <div className="sjx-mobile-account">{accountLinks}</div>
+        </nav>
       )}
+      <div className="sjx-account-links sjx-wrap">{accountLinks}</div>
     </header>
   );
-};
-
-export default Header;
+}
